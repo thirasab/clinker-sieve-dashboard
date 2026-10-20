@@ -82,6 +82,10 @@
       max-width: 100%;
       object-fit: cover;
     }
+    .required-star {
+      color: #ef4444;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -183,7 +187,7 @@
         </div>
       </div>
 
-      <!-- ตารางข้อมูล -->
+      <!-- ตารางข้อมูลจริง -->
       <div class="card">
         <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
           <span class="fw-bold"><i class="bi bi-table me-1"></i>รายการข้อมูลจริงจาก Google Sheets</span>
@@ -229,11 +233,11 @@
             <form id="clinkerForm" onsubmit="submitForm(event)">
               <div class="row g-3 mb-3">
                 <div class="col-md-4">
-                  <label class="form-label small fw-bold">วันที่ทดสอบ</label>
+                  <label class="form-label small fw-bold">วันที่ทดสอบ <span class="required-star">*</span></label>
                   <input type="date" class="form-control" id="entryDate" required>
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label small fw-bold">กะการทำงาน</label>
+                  <label class="form-label small fw-bold">กะการทำงาน <span class="required-star">*</span></label>
                   <select class="form-select" id="entryShift" required>
                     <option value="1">กะ 1 (เช้า)</option>
                     <option value="2">กะ 2 (บ่าย)</option>
@@ -241,7 +245,7 @@
                   </select>
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label small fw-bold text-primary">เลือก Cement Mill (CM)</label>
+                  <label class="form-label small fw-bold text-primary">เลือก Cement Mill (CM) <span class="required-star">*</span></label>
                   <select class="form-select border-primary" id="entryCm" required>
                     <option value="" disabled selected>-- เลือก CM --</option>
                     <option value="5">CM 5</option>
@@ -253,7 +257,7 @@
                   </select>
                 </div>
                 <div class="col-md-12">
-                  <label class="form-label small fw-bold">ผู้รายงาน</label>
+                  <label class="form-label small fw-bold">ผู้รายงาน <span class="required-star">*</span></label>
                   <select class="form-select" id="entryReporter" required>
                     <option value="กำลังโหลด...">กำลังโหลดรายชื่อ...</option>
                   </select>
@@ -282,7 +286,7 @@
               <div class="row g-3 mb-3">
                 <div class="col-md-6">
                   <div class="border rounded p-3 bg-light">
-                    <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1 นิ้ว (1")</label>
+                    <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1 นิ้ว (1") <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text">น้ำหนักชั่งค้าง</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight1" placeholder="0.00" required oninput="calculatePercent()">
@@ -294,16 +298,18 @@
                     </div>
                     
                     <div class="mt-2">
-                      <label class="form-label small mb-1"><i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1" (คลังภาพ/ถ่ายสด)</label>
-                      <input type="file" class="form-control form-control-sm" id="imgFile1" accept="image/*" onchange="handleImageSelection(this, 'preview1')">
-                      <div class="img-preview-box mt-2" id="preview1"><span class="small text-muted">ไม่มีรูป</span></div>
+                      <label class="form-label small mb-1">
+                        <i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1" <span class="required-star">* (บังคับแนบรูป)</span>
+                      </label>
+                      <input type="file" class="form-control form-control-sm" id="imgFile1" accept="image/*" required onchange="handleImageSelection(this, 'preview1')">
+                      <div class="img-preview-box mt-2" id="preview1"><span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span></div>
                     </div>
                   </div>
                 </div>
 
                 <div class="col-md-6">
                   <div class="border rounded p-3 bg-light">
-                    <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1/2 นิ้ว (1/2")</label>
+                    <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1/2 นิ้ว (1/2") <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text">น้ำหนักชั่งค้าง</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight2" placeholder="0.00" required oninput="calculatePercent()">
@@ -315,9 +321,11 @@
                     </div>
                     
                     <div class="mt-2">
-                      <label class="form-label small mb-1"><i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1/2" (คลังภาพ/ถ่ายสด)</label>
-                      <input type="file" class="form-control form-control-sm" id="imgFile2" accept="image/*" onchange="handleImageSelection(this, 'preview2')">
-                      <div class="img-preview-box mt-2" id="preview2"><span class="small text-muted">ไม่มีรูป</span></div>
+                      <label class="form-label small mb-1">
+                        <i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1/2" <span class="required-star">* (บังคับแนบรูป)</span>
+                      </label>
+                      <input type="file" class="form-control form-control-sm" id="imgFile2" accept="image/*" required onchange="handleImageSelection(this, 'preview2')">
+                      <div class="img-preview-box mt-2" id="preview2"><span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span></div>
                     </div>
                   </div>
                 </div>
@@ -360,7 +368,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Web App API Endpoint ที่ได้รับ
+// Web App API Endpoint
 const API_URL = "https://script.google.com/macros/s/AKfycbzeId8QcFaYtW9dswefQ3hz28d3uBs6Ir-UShpVBeMRr10wdDYatzJs8xlNZ11_2Y1D/exec";
 
 let rawData = [];
@@ -476,7 +484,7 @@ async function handleImageSelection(input, previewId) {
     }
   } else {
     compressedImages[previewId] = null;
-    box.innerHTML = `<span class="small text-muted">ไม่มีรูป</span>`;
+    box.innerHTML = `<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>`;
   }
 }
 
@@ -677,11 +685,31 @@ function zoomImage(url) {
 
 async function submitForm(e) {
   e.preventDefault();
+  
+  // ตรวจสอบเงื่อนไขบังคับแนบรูปภาพทั้งสองรูป
+  if (!compressedImages.preview1) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'กรุณาแนบรูปภาพ',
+      text: 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1 นิ้ว ก่อนบันทึกข้อมูล'
+    });
+    return;
+  }
+  
+  if (!compressedImages.preview2) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'กรุณาแนบรูปภาพ',
+      text: 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1/2 นิ้ว ก่อนบันทึกข้อมูล'
+    });
+    return;
+  }
+
   const btn = document.getElementById('saveBtn');
   btn.disabled = true;
   
   try {
-    Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: 'กำลังบันทึกข้อมูลและอัปโหลดรูปภาพ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
     const payload = {
       action: "save",
@@ -709,12 +737,14 @@ async function submitForm(e) {
       Swal.fire('สำเร็จ', json.message, 'success');
       document.getElementById('clinkerForm').reset();
       
+      // ล้างค่าและพรีวิวภาพ
       compressedImages.preview1 = null;
       compressedImages.preview2 = null;
-      document.getElementById('preview1').innerHTML = '<span class="small text-muted">ไม่มีรูป</span>';
-      document.getElementById('preview2').innerHTML = '<span class="small text-muted">ไม่มีรูป</span>';
+      document.getElementById('preview1').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
+      document.getElementById('preview2').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
       calculatePercent();
       
+      // สลับหน้าไปยัง Dashboard และดึงข้อมูลล่าสุด
       bootstrap.Tab.getInstance(document.getElementById('dashboard-tab')).show();
       fetchData();
     } else {
