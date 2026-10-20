@@ -282,7 +282,24 @@
                 <div class="col-md-12">
                   <label class="form-label small fw-bold">ผู้รายงาน <span class="required-star">*</span></label>
                   <select class="form-select" id="entryReporter" required onchange="saveDraft()">
-                    <option value="กำลังโหลด...">กำลังโหลดรายชื่อ...</option>
+                    <option value="" disabled selected>-- เลือกผู้รายงาน --</option>
+                    <option value="นายอาคม บัญฑิตา">นายอาคม บัญฑิตา</option>
+                    <option value="นายชัยณรงค์ รอดแก้ว">นายชัยณรงค์ รอดแก้ว</option>
+                    <option value="นายประกิจ เด็ดดวง">นายประกิจ เด็ดดวง</option>
+                    <option value="นายไกรศักดิ์ นวลอ่อน">นายไกรศักดิ์ นวลอ่อน</option>
+                    <option value="นายทวีศักดิ์ ชุมลักษณ์">นายทวีศักดิ์ ชุมลักษณ์</option>
+                    <option value="นายสมชาย เรือนแก้ว">นายสมชาย เรือนแก้ว</option>
+                    <option value="นายอุทัย ทองใส">นายอุทัย ทองใส</option>
+                    <option value="นายสมชาย เพ็ญพอรู้">นายสมชาย เพ็ญพอรู้</option>
+                    <option value="นายสายัญ แก้วบ้านดอน">นายสายัญ แก้วบ้านดอน</option>
+                    <option value="นายวัฒนา จันทร์สงแก้ว">นายวัฒนา จันทร์สงแก้ว</option>
+                    <option value="นายสุพัตร จิตรเพชร">นายสุพัตร จิตรเพชร</option>
+                    <option value="นายนันธชัย เกตุประกอบ">นายนันธชัย เกตุประกอบ</option>
+                    <option value="นายวิพรชัย สียกเอ้ง">นายวิพรชัย สียกเอ้ง</option>
+                    <option value="นายระวี อำภาสุวรรณ์">นายระวี อำภาสุวรรณ์</option>
+                    <option value="นายสุรินทร์ จันทร์ต้น">นายสุรินทร์ จันทร์ต้น</option>
+                    <option value="ธีรศักดิ์ ทองน้อย">ธีรศักดิ์ ทองน้อย</option>
+                    <option value="ธีรภัทธ อักษรไทย">ธีรภัทธ อักษรไทย</option>
                   </select>
                 </div>
               </div>
@@ -423,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTrendChart();
   initBenchmarkChart();
   fetchData();
-  fetchReporters();
   restoreDraft();
   setupNetworkMonitoring();
 });
@@ -467,6 +483,7 @@ function restoreDraft() {
       if (draft.date) document.getElementById('entryDate').value = draft.date;
       if (draft.shift) document.getElementById('entryShift').value = draft.shift;
       if (draft.cm) document.getElementById('entryCm').value = draft.cm;
+      if (draft.reporter) document.getElementById('entryReporter').value = draft.reporter;
       if (draft.grossWeight) document.getElementById('grossWeight').value = draft.grossWeight;
       if (draft.tareWeight) document.getElementById('tareWeight').value = draft.tareWeight;
       if (draft.screen1) document.getElementById('weight1').value = draft.screen1;
@@ -800,23 +817,6 @@ async function fetchData() {
   } catch (err) {
     Swal.close();
     Swal.fire('เชื่อมต่อล้มเหลว', 'กำลังทำงานในโหมด Offline ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'warning');
-  }
-}
-
-async function fetchReporters() {
-  try {
-    const res = await fetch(`${API_URL}?action=getReporters`);
-    const json = await res.json();
-    if (json.status === "success") {
-      const sel = document.getElementById('entryReporter');
-      sel.innerHTML = '<option value="" disabled selected>-- เลือกผู้รายงาน --</option>';
-      json.data.forEach(name => {
-        sel.innerHTML += `<option value="${name}">${name}</option>`;
-      });
-      restoreDraft();
-    }
-  } catch (e) {
-    document.getElementById('entryReporter').innerHTML = '<option value="ผู้ปฏิบัติงาน">ผู้ปฏิบัติงาน</option>';
   }
 }
 
