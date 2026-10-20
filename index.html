@@ -99,10 +99,10 @@
 <body>
 
 <div class="container-fluid px-3 px-md-4 py-3">
-  <!-- Header Banner พร้อมตัวบอกสถานะเน็ต (Online/Offline) -->
+  <!-- Header Banner -->
   <div class="app-header d-flex flex-wrap justify-content-between align-items-center gap-2">
     <div>
-      <h3 class="fw-bold mb-1"><i class="bi bi-pie-chart-fill text-warning me-2"></i>ระบบวิเคราะห์และบันทึก % ค้างตะแกรงปูนเม็ด</h3>
+      <h3 class="fw-bold mb-1"><i class="bi bi-pie-chart-fill text-warning me-2"></i>ระบบบันทึกและวิเคราะห์ % ค้างตะแกรงปูนเม็ด</h3>
       <p class="mb-0 text-slate-300 small">Cement Grinding Plant | CM 5, 6, 7, 9, 10, 11</p>
     </div>
     <div class="d-flex align-items-center gap-2">
@@ -167,13 +167,13 @@
       <div class="row g-2 mb-3">
         <div class="col-6 col-md-4">
           <div class="card p-3 border-start border-primary border-4">
-            <div class="text-muted small">เฉลี่ย % ค้าง 1" (เกณฑ์ $\le$ 10%)</div>
+            <div class="text-muted small">เฉลี่ย % ค้าง 1" (เกณฑ์ &le; 10%)</div>
             <h4 class="fw-bold mb-0 text-primary" id="kpiAvg1">- %</h4>
           </div>
         </div>
         <div class="col-6 col-md-4">
           <div class="card p-3 border-start border-warning border-4">
-            <div class="text-muted small">เฉลี่ย % ค้าง 1/2" สะสม (เกณฑ์ $\le$ 30%)</div>
+            <div class="text-muted small">เฉลี่ย % ค้าง 1/2" สะสม (เกณฑ์ &le; 30%)</div>
             <h4 class="fw-bold mb-0 text-warning" id="kpiAvg2">- %</h4>
           </div>
         </div>
@@ -207,7 +207,7 @@
         </div>
       </div>
 
-      <!-- ตารางข้อมูล -->
+      <!-- ตารางข้อมูลจริง -->
       <div class="card">
         <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
           <span class="fw-bold"><i class="bi bi-table me-1"></i>รายการข้อมูลจริงจาก Google Sheets</span>
@@ -354,13 +354,13 @@
                 </div>
               </div>
 
-              <!-- รวม % ค้างสะสม -->
-              <div class="alert alert-info d-flex justify-content-between align-items-center p-3 mb-4">
+              <!-- รวม % ค้างสะสม พร้อมกล่องแสดงสถานะ เกินเกณฑ์ / ปกติ -->
+              <div class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center p-3 mb-4" id="statusAlertBox">
                 <div>
-                  <h6 class="fw-bold mb-0">รวม % ค้างตะแกรงสะสมทั้งหมด (Cumulative Retained)</h6>
-                  <small class="text-muted">เกณฑ์ควบคุม: ตะแกรง 1" $\le$ 10% | ตะแกรง 1/2" สะสม $\le$ 30%</small>
+                  <h6 class="fw-bold mb-1">รวม % ค้างตะแกรงสะสม (Cumulative Retained)</h6>
+                  <small class="text-muted">เกณฑ์ควบคุมมาตรฐาน: ตะแกรง 1" &le; 10% | ตะแกรง 1/2" สะสม &le; 30%</small>
                 </div>
-                <div class="fs-4 fw-bold text-danger" id="totalPctDisplay">0.00 %</div>
+                <div class="fs-4 fw-bold mt-2 mt-md-0" id="totalPctDisplay">0.00 %</div>
               </div>
 
               <div class="d-grid">
@@ -518,7 +518,7 @@ async function processOfflineQueue() {
 }
 
 // ==========================================
-// 3. CALCULATION & IMAGE COMPRESSION
+// 3. CALCULATION & REAL-TIME SPEC CHECK
 // ==========================================
 function calculatePercent() {
   const gross = parseFloat(document.getElementById('grossWeight').value) || 0;
@@ -529,13 +529,34 @@ function calculatePercent() {
   const w1 = parseFloat(document.getElementById('weight1').value) || 0;
   const w2 = parseFloat(document.getElementById('weight2').value) || 0;
   
+  // 1. คำนวณ % ค้าง 1 นิ้ว
   const pct1 = (w1 / net) * 100;
+  
+  // 2. คำนวณ % ค้าง 1/2 นิ้ว แบบรวมน้ำหนักตะแกรง 1 นิ้วด้วย (สะสม)
   const w2Cumulative = w1 + w2;
   const pct2Cumulative = (w2Cumulative / net) * 100;
   
-  document.getElementById('pct1Display').innerText = pct1.toFixed(2) + ' %';
-  document.getElementById('pct2Display').innerText = pct2Cumulative.toFixed(2) + ' %';
-  document.getElementById('totalPctDisplay').innerText = pct2Cumulative.toFixed(2) + ' %';
+  // แสดงผลค่าคำนวณแต่ละตะแกรง
+  const isOut1 = pct1 > 10.0;
+  const isOut2 = pct2Cumulative > 30.0;
+  const isOutOfSpec = isOut1 || isOut2;
+
+  document.getElementById('pct1Display').innerHTML = `${pct1.toFixed(2)} % ${isOut1 ? '<span class="badge bg-danger fs-6 ms-1">เกินเกณฑ์</span>' : ''}`;
+  document.getElementById('pct2Display').innerHTML = `${pct2Cumulative.toFixed(2)} % ${isOut2 ? '<span class="badge bg-danger fs-6 ms-1">เกินเกณฑ์</span>' : ''}`;
+  
+  // ตรวจสอบสถานะภาพรวมและเปลี่ยนสีกล่องแสดงผล
+  const totalDisplay = document.getElementById('totalPctDisplay');
+  const alertBox = document.getElementById('statusAlertBox');
+
+  if (isOutOfSpec) {
+    alertBox.className = "alert alert-danger border d-flex flex-wrap justify-content-between align-items-center p-3 mb-4";
+    totalDisplay.className = "fs-4 fw-bold text-danger mt-2 mt-md-0";
+    totalDisplay.innerHTML = `${pct2Cumulative.toFixed(2)} % <span class="badge bg-danger fs-6 ms-1">เกินเกณฑ์ (Out of Spec)</span>`;
+  } else {
+    alertBox.className = "alert alert-success border d-flex flex-wrap justify-content-between align-items-center p-3 mb-4";
+    totalDisplay.className = "fs-4 fw-bold text-success mt-2 mt-md-0";
+    totalDisplay.innerHTML = `${pct2Cumulative.toFixed(2)} % <span class="badge bg-success fs-6 ms-1">ปกติ (Normal)</span>`;
+  }
 }
 
 function compressAndResizeImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
@@ -601,7 +622,7 @@ async function handleImageSelection(input, previewId) {
 }
 
 // ==========================================
-// 4. CHARTS CONFIGURATION (TREND & BENCHMARK)
+// 4. CHARTS (TREND & BENCHMARK)
 // ==========================================
 function initTrendChart() {
   const ctx = document.getElementById('trendChart').getContext('2d');
@@ -945,7 +966,7 @@ function zoomImage(url) {
 }
 
 // ==========================================
-// 6. FORM SUBMISSION (WITH OFFLINE FALLBACK)
+// 6. FORM SUBMISSION
 // ==========================================
 async function submitForm(e) {
   e.preventDefault();
@@ -978,7 +999,6 @@ async function submitForm(e) {
     }
   };
 
-  // ตรวจจับสัญญาณเน็ต ถ้า Offline ให้นำเข้าคิวส่งในเครื่อง
   if (!navigator.onLine) {
     const queue = JSON.parse(localStorage.getItem('offline_upload_queue') || "[]");
     queue.push(payload);
@@ -1014,7 +1034,6 @@ async function submitForm(e) {
       Swal.fire('ข้อผิดพลาด', json.message, 'error');
     }
   } catch (err) {
-    // กรณี fetch fail จากเน็ตหลุดกลางคัน
     const queue = JSON.parse(localStorage.getItem('offline_upload_queue') || "[]");
     queue.push(payload);
     localStorage.setItem('offline_upload_queue', JSON.stringify(queue));
