@@ -66,6 +66,9 @@
       vertical-align: middle;
       white-space: nowrap;
     }
+    .table-standards thead th {
+      background-color: #1e3a8a !important;
+    }
     .img-preview-box {
       width: 100%;
       height: 140px;
@@ -138,7 +141,7 @@
     
     <!-- ==================== VIEW 1: DASHBOARD ==================== -->
     <div class="tab-pane fade show active" id="dashboard-view" role="tabpanel">
-      <!-- แถบตั้งค่าเกณฑ์ควบคุมเหนือกราฟ (Control Limit Settings Bar) -->
+      <!-- แถบตั้งค่าเกณฑ์ควบคุมเหนือกราฟ -->
       <div class="card p-3 mb-3 bg-white border-primary border-opacity-25">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
           <div class="d-flex align-items-center gap-2">
@@ -149,10 +152,41 @@
               <span>ตะแกรง 1/2" สะสม: <b class="text-danger" id="currentLimitHalfText">&le; 30.00%</b></span>
             </div>
           </div>
-          <div>
-            <button class="btn btn-sm btn-primary" onclick="openLimitSettingsModal()">
-              <i class="bi bi-sliders me-1"></i> ตั้งค่าเกณฑ์ควบคุม (Set Limits)
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#standardsCollapse">
+              <i class="bi bi-book me-1"></i> มาตรฐานสากล Clinker Granulometry
             </button>
+            <button class="btn btn-sm btn-primary" onclick="openLimitSettingsModal()">
+              <i class="bi bi-sliders me-1"></i> ตั้งค่าเกณฑ์ควบคุม
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ส่วนขยาย: ตารางแสดงมาตรฐานสากล Clinker Granulometry จากชีต -->
+      <div class="collapse mb-3" id="standardsCollapse">
+        <div class="card p-3 border-primary border-2 bg-white">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-primary mb-0">
+              <i class="bi bi-award-fill me-1"></i>เกณฑ์ขนาดเม็ดปูนเม็ด (Clinker Granulometry) ที่เหมาะสมตามมาตรฐานสากลโรงงานปูนซีเมนต์
+            </h6>
+            <span class="badge bg-primary text-white">ข้อมูลจากชีต ClinkerStandards</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered table-standards align-middle mb-0">
+              <thead>
+                <tr class="text-center">
+                  <th style="width: 15%;">ช่วงขนาดเม็ด (Fraction)</th>
+                  <th style="width: 15%;">เกณฑ์สากล (World Standard)</th>
+                  <th style="width: 12%;">เป้าหมาย CM 5-11</th>
+                  <th style="width: 29%;">ผลกระทบต่อระบบบด (Mill Impact)</th>
+                  <th style="width: 29%;">ผลกระทบต่อเตาและ Cooler</th>
+                </tr>
+              </thead>
+              <tbody id="standardsTableBody">
+                <tr><td colspan="5" class="text-center py-2 text-muted">กำลังดึงเกณฑ์มาตรฐานจากชีต...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -558,7 +592,6 @@ function updateLimitsUI() {
   document.getElementById('kpiLabel2').innerText = `เฉลี่ย % ค้าง 1/2" สะสม (เกณฑ์ \u2264 ${currentLimits.maxHalfInch}%)`;
   document.getElementById('formSpecHintText').innerText = `เกณฑ์ควบคุมมาตรฐาน: ตะแกรง 1" \u2264 ${currentLimits.max1Inch}% | ตะแกรง 1/2" สะสม \u2264 ${currentLimits.maxHalfInch}%`;
 
-  // อัปเดตเส้นกราฟ Trend
   if (trendChartInstance && trendChartInstance.options.plugins.annotation) {
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMin = currentLimits.max1Inch;
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMax = currentLimits.max1Inch;
@@ -570,7 +603,6 @@ function updateLimitsUI() {
     trendChartInstance.update();
   }
 
-  // อัปเดตเส้นกราฟ Benchmark
   if (benchmarkChartInstance && benchmarkChartInstance.options.plugins.annotation) {
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMin = currentLimits.max1Inch;
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMax = currentLimits.max1Inch;
@@ -583,6 +615,34 @@ function updateLimitsUI() {
   }
 
   calculatePercent();
+}
+
+function renderStandardsTable(standards) {
+  const tbody = document.getElementById('standardsTableBody');
+  if (!standards || standards.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-2 text-muted">ไม่พบข้อมูลมาตรฐานในชีต</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = '';
+  standards.forEach((item, index) => {
+    const isOptimal = item.fraction.includes('5 - 12.5') || item.fraction.includes('Ideal');
+    const isCoarse = item.fraction.includes('> 25');
+    
+    let badgeClass = 'bg-secondary';
+    if (isOptimal) badgeClass = 'bg-success';
+    if (isCoarse) badgeClass = 'bg-danger';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="fw-bold"><span class="badge ${badgeClass} me-1">${item.fraction}</span></td>
+      <td class="text-center fw-semibold text-primary">${item.worldStandard}</td>
+      <td class="text-center fw-bold text-danger">${item.plantTarget}</td>
+      <td class="small">${item.millImpact}</td>
+      <td class="small">${item.kilnImpact}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 // ==========================================
@@ -936,6 +996,9 @@ async function fetchData() {
       if (json.limits) {
         currentLimits = json.limits;
         updateLimitsUI();
+      }
+      if (json.standards) {
+        renderStandardsTable(json.standards);
       }
       applyFilters();
     } else {
