@@ -75,6 +75,7 @@
       justify-content: center;
       overflow: hidden;
       background-color: #fff;
+      position: relative;
     }
     .img-preview-box img {
       max-height: 100%;
@@ -115,7 +116,6 @@
     
     <!-- ==================== VIEW 1: DASHBOARD ==================== -->
     <div class="tab-pane fade show active" id="dashboard-view" role="tabpanel">
-      <!-- ตัวกรองค้นหารายเดือน และเลือก CM 5,6,7,9,10,11 -->
       <div class="card p-3 mb-3 bg-white">
         <div class="row g-2 align-items-end">
           <div class="col-6 col-md-3">
@@ -216,7 +216,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td colspan="14" class="text-center py-4 text-muted">กำลังโหลดข้อมูล...</td></tr>
+              <tr><td colspan="14" class="py-4 text-muted">กำลังโหลดข้อมูล...</td></tr>
             </tbody>
           </table>
         </div>
@@ -301,8 +301,9 @@
                     </div>
                     
                     <div class="mt-2">
-                      <label class="form-label small mb-1">รูปถ่ายตะแกรง 1"</label>
-                      <input type="file" class="form-control form-control-sm" id="imgFile1" accept="image/*" capture="environment" onchange="previewImg(this, 'preview1')">
+                      <label class="form-label small mb-1"><i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1" (เลือกจากคลัง/ถ่ายสด)</label>
+                      <!-- เอา capture ออกเพื่อให้เลือกจากคลังภาพได้ -->
+                      <input type="file" class="form-control form-control-sm" id="imgFile1" accept="image/*" onchange="handleImageSelection(this, 'preview1')">
                       <div class="img-preview-box mt-2" id="preview1"><span class="small text-muted">ไม่มีรูป</span></div>
                     </div>
                   </div>
@@ -322,8 +323,9 @@
                     </div>
                     
                     <div class="mt-2">
-                      <label class="form-label small mb-1">รูปถ่ายตะแกรง 1/2"</label>
-                      <input type="file" class="form-control form-control-sm" id="imgFile2" accept="image/*" capture="environment" onchange="previewImg(this, 'preview2')">
+                      <label class="form-label small mb-1"><i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1/2" (เลือกจากคลัง/ถ่ายสด)</label>
+                      <!-- เอา capture ออกเพื่อให้เลือกจากคลังภาพได้ -->
+                      <input type="file" class="form-control form-control-sm" id="imgFile2" accept="image/*" onchange="handleImageSelection(this, 'preview2')">
                       <div class="img-preview-box mt-2" id="preview2"><span class="small text-muted">ไม่มีรูป</span></div>
                     </div>
                   </div>
@@ -373,11 +375,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzeId8QcFaYtW9dswefQ3hz
 let rawData = [];
 let chartInstance = null;
 
+// เก็บข้อมูล Base64 ของรูปที่ถูกย่อขนาดและบีบอัดแล้ว
+let compressedImages = {
+  preview1: null,
+  preview2: null
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date();
   document.getElementById('entryDate').valueAsDate = today;
   
-  // ตั้งช่วงเดือนย้อนหลัง 3 เดือน
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const past = new Date();
@@ -408,6 +415,78 @@ function calculatePercent() {
   document.getElementById('pct1Display').innerText = pct1.toFixed(2) + ' %';
   document.getElementById('pct2Display').innerText = pct2.toFixed(2) + ' %';
   document.getElementById('totalPctDisplay').innerText = pctTotal.toFixed(2) + ' %';
+}
+
+/**
+ * ฟังก์ชันย่อขนาดภาพและบีบอัดไฟล์ภาพฝั่ง Browser (Client-side Compression)
+ * ย่อด้านที่ยาวที่สุดไม่เกิน maxWidth/maxHeight (เช่น 1200px) และบีบอัดเป็น JPEG คุณภาพ 75%
+ */
+function compressAndResizeImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        let width = img.width;
+        let height = img.height;
+
+        // คำนวณ Aspect Ratio เพื่อรักษาอัตราส่วนภาพ
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // แปลงภาพเป็น Base64 รูปแบบ image/jpeg พร้อมบีบอัด
+        const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = () => reject(new Error("ไม่สามารถประมวลผลรูปภาพได้"));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error("ไม่สามารถอ่านไฟล์ได้"));
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * จัดการเมื่อมีการเลือกรูปภาพ: บีบอัดภาพทันที และแสดง Preview
+ */
+async function handleImageSelection(input, previewId) {
+  const box = document.getElementById(previewId);
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    box.innerHTML = `<div class="spinner-border spinner-border-sm text-primary" role="status"></div> <span class="small ms-1 text-muted">กำลังย่อขนาดภาพ...</span>`;
+    
+    try {
+      // ลดขนาดภาพทันที (1200px, 0.75 quality) จะได้ไฟล์ประมาณ 150-300 KB
+      const compressedData = await compressAndResizeImage(file, 1200, 1200, 0.75);
+      compressedImages[previewId] = compressedData;
+      box.innerHTML = `<img src="${compressedData}">`;
+    } catch (err) {
+      compressedImages[previewId] = null;
+      box.innerHTML = `<span class="small text-danger">เกิดข้อผิดพลาดในการโหลดรูป</span>`;
+    }
+  } else {
+    compressedImages[previewId] = null;
+    box.innerHTML = `<span class="small text-muted">ไม่มีรูป</span>`;
+  }
 }
 
 function initChart() {
@@ -472,7 +551,6 @@ function initChart() {
   });
 }
 
-// โหลดข้อมูลผ่าน Fetch API
 async function fetchData() {
   Swal.fire({ title: 'กำลังโหลดข้อมูลจากชีต...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
   try {
@@ -491,7 +569,6 @@ async function fetchData() {
   }
 }
 
-// โหลดรายชื่อผู้รายงาน
 async function fetchReporters() {
   try {
     const res = await fetch(`${API_URL}?action=getReporters`);
@@ -618,17 +695,6 @@ function renderTable(data) {
   });
 }
 
-function previewImg(input, targetId) {
-  const box = document.getElementById(targetId);
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = e => { box.innerHTML = `<img src="${e.target.result}">`; };
-    reader.readAsDataURL(input.files[0]);
-  } else {
-    box.innerHTML = `<span class="small text-muted">ไม่มีรูป</span>`;
-  }
-}
-
 function zoomImage(url) {
   document.getElementById('zoomImg').src = url;
   new bootstrap.Modal(document.getElementById('imageModal')).show();
@@ -642,9 +708,7 @@ async function submitForm(e) {
   try {
     Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
-    const file1 = document.getElementById('imgFile1').files[0];
-    const file2 = document.getElementById('imgFile2').files[0];
-    
+    // ดึงรูป Base64 ที่ผ่านการย่อขนาดแล้ว
     const payload = {
       action: "save",
       data: {
@@ -656,12 +720,11 @@ async function submitForm(e) {
         tareWeight: document.getElementById('tareWeight').value,
         screen1: document.getElementById('weight1').value,
         screen2: document.getElementById('weight2').value,
-        screen1Image: file1 ? await toBase64(file1) : null,
-        screen2Image: file2 ? await toBase64(file2) : null
+        screen1Image: compressedImages.preview1,
+        screen2Image: compressedImages.preview2
       }
     };
     
-    // ยิงแบบ POST ไปยัง Google Apps Script
     const res = await fetch(API_URL, {
       method: "POST",
       body: JSON.stringify(payload)
@@ -671,6 +734,10 @@ async function submitForm(e) {
     if (json.status === "success") {
       Swal.fire('สำเร็จ', json.message, 'success');
       document.getElementById('clinkerForm').reset();
+      
+      // ล้างสถานะรูป
+      compressedImages.preview1 = null;
+      compressedImages.preview2 = null;
       document.getElementById('preview1').innerHTML = '<span class="small text-muted">ไม่มีรูป</span>';
       document.getElementById('preview2').innerHTML = '<span class="small text-muted">ไม่มีรูป</span>';
       calculatePercent();
@@ -685,15 +752,6 @@ async function submitForm(e) {
   } finally {
     btn.disabled = false;
   }
-}
-
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-    reader.readAsDataURL(file);
-  });
 }
 
 function deleteItem(id) {
