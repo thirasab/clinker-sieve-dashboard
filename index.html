@@ -163,7 +163,7 @@
         </div>
       </div>
 
-      <!-- ส่วนขยาย: ตารางแสดงมาตรฐานสากล Clinker Granulometry จากชีต -->
+      <!-- ส่วนขยาย: ตารางแสดงมาตรฐานสากล Clinker Granulometry (4 คอลัมน์) -->
       <div class="collapse mb-3" id="standardsCollapse">
         <div class="card p-3 border-primary border-2 bg-white">
           <div class="d-flex justify-content-between align-items-center mb-2">
@@ -176,15 +176,14 @@
             <table class="table table-sm table-bordered table-standards align-middle mb-0">
               <thead>
                 <tr class="text-center">
-                  <th style="width: 15%;">ช่วงขนาดเม็ด (Fraction)</th>
-                  <th style="width: 15%;">เกณฑ์สากล (World Standard)</th>
-                  <th style="width: 12%;">เป้าหมาย CM 5-11</th>
-                  <th style="width: 29%;">ผลกระทบต่อระบบบด (Mill Impact)</th>
-                  <th style="width: 29%;">ผลกระทบต่อเตาและ Cooler</th>
+                  <th style="width: 22%;">ช่วงขนาดเม็ด (Fraction)</th>
+                  <th style="width: 20%;">เกณฑ์สากล (World Standard)</th>
+                  <th style="width: 18%;">เป้าหมาย CM 5-11</th>
+                  <th style="width: 40%;">ผลกระทบต่อระบบบด (Mill Impact)</th>
                 </tr>
               </thead>
               <tbody id="standardsTableBody">
-                <tr><td colspan="5" class="text-center py-2 text-muted">กำลังดึงเกณฑ์มาตรฐานจากชีต...</td></tr>
+                <tr><td colspan="4" class="text-center py-2 text-muted">กำลังดึงเกณฑ์มาตรฐานจากชีต...</td></tr>
               </tbody>
             </table>
           </div>
@@ -620,12 +619,12 @@ function updateLimitsUI() {
 function renderStandardsTable(standards) {
   const tbody = document.getElementById('standardsTableBody');
   if (!standards || standards.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-2 text-muted">ไม่พบข้อมูลมาตรฐานในชีต</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-2 text-muted">ไม่พบข้อมูลมาตรฐานในชีต</td></tr>`;
     return;
   }
 
   tbody.innerHTML = '';
-  standards.forEach((item, index) => {
+  standards.forEach((item) => {
     const isOptimal = item.fraction.includes('5 - 12.5') || item.fraction.includes('Ideal');
     const isCoarse = item.fraction.includes('> 25');
     
@@ -639,7 +638,6 @@ function renderStandardsTable(standards) {
       <td class="text-center fw-semibold text-primary">${item.worldStandard}</td>
       <td class="text-center fw-bold text-danger">${item.plantTarget}</td>
       <td class="small">${item.millImpact}</td>
-      <td class="small">${item.kilnImpact}</td>
     `;
     tbody.appendChild(tr);
   });
