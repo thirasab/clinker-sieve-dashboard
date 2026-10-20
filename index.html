@@ -10,8 +10,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Chart.js & SweetAlert2 -->
+  <!-- Chart.js & Plugins -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
@@ -86,18 +87,26 @@
       color: #ef4444;
       font-weight: bold;
     }
+    .badge-out-spec {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      font-weight: 600;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
 
 <div class="container-fluid px-3 px-md-4 py-3">
-  <!-- Header Banner -->
+  <!-- Header Banner พร้อมตัวบอกสถานะเน็ต (Online/Offline) -->
   <div class="app-header d-flex flex-wrap justify-content-between align-items-center gap-2">
     <div>
-      <h3 class="fw-bold mb-1"><i class="bi bi-pie-chart-fill text-warning me-2"></i>ระบบบันทึกและวิเคราะห์ % ค้างตะแกรงปูนเม็ด</h3>
+      <h3 class="fw-bold mb-1"><i class="bi bi-pie-chart-fill text-warning me-2"></i>ระบบวิเคราะห์และบันทึก % ค้างตะแกรงปูนเม็ด</h3>
       <p class="mb-0 text-slate-300 small">Cement Grinding Plant | CM 5, 6, 7, 9, 10, 11</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <span id="networkStatusBadge" class="badge bg-success"><i class="bi bi-wifi me-1"></i>ออนไลน์</span>
       <button class="btn btn-outline-light btn-sm" onclick="fetchData()"><i class="bi bi-arrow-clockwise me-1"></i>รีเฟรชข้อมูล</button>
     </div>
   </div>
@@ -120,7 +129,7 @@
     
     <!-- ==================== VIEW 1: DASHBOARD ==================== -->
     <div class="tab-pane fade show active" id="dashboard-view" role="tabpanel">
-      <!-- ตัวกรองค้นหารายเดือน และเลือก CM 5, 6, 7, 9, 10, 11 -->
+      <!-- ตัวกรองค้นหารายเดือน -->
       <div class="card p-3 mb-3 bg-white">
         <div class="row g-2 align-items-end">
           <div class="col-6 col-md-3">
@@ -144,8 +153,8 @@
             <input type="month" class="form-control form-select-sm" id="filterEndMonth" onchange="applyFilters()">
           </div>
           <div class="col-6 col-md-3">
-            <label class="form-label small fw-bold">แสดงเส้นกราฟ</label>
-            <select class="form-select form-select-sm" id="filterMetric" onchange="updateChart()">
+            <label class="form-label small fw-bold">แสดงเส้นกราฟ Trend</label>
+            <select class="form-select form-select-sm" id="filterMetric" onchange="updateTrendChart()">
               <option value="all">แสดงทั้งหมด (% ค้าง 1", 1/2" สะสม)</option>
               <option value="1inch">เฉพาะ % ค้าง 1 นิ้ว</option>
               <option value="halfInch">เฉพาะ % ค้าง 1/2 นิ้ว (สะสม)</option>
@@ -154,40 +163,51 @@
         </div>
       </div>
 
-      <!-- KPI Summary Cards -->
+      <!-- Quick KPI Cards -->
       <div class="row g-2 mb-3">
         <div class="col-6 col-md-4">
           <div class="card p-3 border-start border-primary border-4">
-            <div class="text-muted small">เฉลี่ย % ค้าง 1"</div>
+            <div class="text-muted small">เฉลี่ย % ค้าง 1" (เกณฑ์ $\le$ 10%)</div>
             <h4 class="fw-bold mb-0 text-primary" id="kpiAvg1">- %</h4>
           </div>
         </div>
         <div class="col-6 col-md-4">
           <div class="card p-3 border-start border-warning border-4">
-            <div class="text-muted small">เฉลี่ย % ค้าง 1/2" (สะสมรวม 1")</div>
+            <div class="text-muted small">เฉลี่ย % ค้าง 1/2" สะสม (เกณฑ์ $\le$ 30%)</div>
             <h4 class="fw-bold mb-0 text-warning" id="kpiAvg2">- %</h4>
           </div>
         </div>
         <div class="col-12 col-md-4">
           <div class="card p-3 border-start border-success border-4">
-            <div class="text-muted small">จำนวนตัวอย่างทดสอบ</div>
+            <div class="text-muted small">จำนวนตัวอย่างที่วิเคราะห์</div>
             <h4 class="fw-bold mb-0 text-success" id="kpiCount">0 รายการ</h4>
           </div>
         </div>
       </div>
 
-      <!-- กราฟ Chart.js -->
+      <!-- กราฟที่ 1: CM Benchmark Bar Chart (เปรียบเทียบ 6 หมอบด) -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="fw-bold mb-0"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรงตามวัน/เวลา</h6>
-          <span class="badge bg-light text-dark border" id="chartSubTitle">แสดงผลทุก CM</span>
+          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill me-1 text-primary"></i>กราฟแท่งเปรียบเทียบค่าเฉลี่ยรายหมอบด (CM5 vs CM6 vs CM7 vs CM9 vs CM10 vs CM11)</h6>
+          <span class="badge bg-light text-muted border">Benchmark Analysis</span>
         </div>
-        <div style="height: 330px; position: relative;">
-          <canvas id="screeningChart"></canvas>
+        <div style="height: 300px; position: relative;">
+          <canvas id="benchmarkChart"></canvas>
         </div>
       </div>
 
-      <!-- ตารางข้อมูลจริง -->
+      <!-- กราฟที่ 2: Trend Line Chart พร้อมเส้น Spec Limits -->
+      <div class="card p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรง พร้อมเส้นควบคุมมาตรฐาน (Upper Spec Limit)</h6>
+          <span class="badge bg-light text-dark border" id="chartSubTitle">แสดงผลทุก CM</span>
+        </div>
+        <div style="height: 330px; position: relative;">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- ตารางข้อมูล -->
       <div class="card">
         <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
           <span class="fw-bold"><i class="bi bi-table me-1"></i>รายการข้อมูลจริงจาก Google Sheets</span>
@@ -209,7 +229,7 @@
                 <th>ผู้รายงาน</th>
                 <th>รูป 1"</th>
                 <th>รูป 1/2"</th>
-                <th>จัดการ</th>
+                <th>จัดการ (PIN)</th>
               </tr>
             </thead>
             <tbody>
@@ -225,20 +245,23 @@
       <div class="row justify-content-center">
         <div class="col-lg-8">
           <div class="card p-3 p-md-4">
-            <div class="d-flex align-items-center gap-2 border-bottom pb-2 mb-3">
-              <i class="bi bi-calculator-fill fs-4 text-primary"></i>
-              <h5 class="fw-bold mb-0">แบบฟอร์มชั่งร่อนปูนเม็ด (Clinker Sieve Analysis)</h5>
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-calculator-fill fs-4 text-primary"></i>
+                <h5 class="fw-bold mb-0">แบบฟอร์มชั่งร่อนปูนเม็ด (Clinker Sieve Analysis)</h5>
+              </div>
+              <span class="badge bg-light text-muted border small" id="draftStatusText">ระบบ Auto-Draft พร้อมทำงาน</span>
             </div>
 
             <form id="clinkerForm" onsubmit="submitForm(event)">
               <div class="row g-3 mb-3">
                 <div class="col-md-4">
                   <label class="form-label small fw-bold">วันที่ทดสอบ <span class="required-star">*</span></label>
-                  <input type="date" class="form-control" id="entryDate" required>
+                  <input type="date" class="form-control" id="entryDate" required onchange="saveDraft()">
                 </div>
                 <div class="col-md-4">
                   <label class="form-label small fw-bold">กะการทำงาน <span class="required-star">*</span></label>
-                  <select class="form-select" id="entryShift" required>
+                  <select class="form-select" id="entryShift" required onchange="saveDraft()">
                     <option value="1">กะ 1 (เช้า)</option>
                     <option value="2">กะ 2 (บ่าย)</option>
                     <option value="3">กะ 3 (ดึก)</option>
@@ -246,7 +269,7 @@
                 </div>
                 <div class="col-md-4">
                   <label class="form-label small fw-bold text-primary">เลือก Cement Mill (CM) <span class="required-star">*</span></label>
-                  <select class="form-select border-primary" id="entryCm" required>
+                  <select class="form-select border-primary" id="entryCm" required onchange="saveDraft()">
                     <option value="" disabled selected>-- เลือก CM --</option>
                     <option value="5">CM 5</option>
                     <option value="6">CM 6</option>
@@ -258,7 +281,7 @@
                 </div>
                 <div class="col-md-12">
                   <label class="form-label small fw-bold">ผู้รายงาน <span class="required-star">*</span></label>
-                  <select class="form-select" id="entryReporter" required>
+                  <select class="form-select" id="entryReporter" required onchange="saveDraft()">
                     <option value="กำลังโหลด...">กำลังโหลดรายชื่อ...</option>
                   </select>
                 </div>
@@ -269,11 +292,11 @@
                 <div class="row g-2 align-items-center">
                   <div class="col-md-4">
                     <label class="form-label small mb-1">น้ำหนักชั่งรวมถัง (กก.)</label>
-                    <input type="number" step="0.01" class="form-control form-control-sm text-center fw-bold" id="grossWeight" value="10.50" oninput="calculatePercent()">
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center fw-bold" id="grossWeight" value="10.50" oninput="calculatePercent(); saveDraft();">
                   </div>
                   <div class="col-md-4">
                     <label class="form-label small mb-1">หักค่าน้ำหนักถัง (กก.)</label>
-                    <input type="number" step="0.01" class="form-control form-control-sm text-center text-muted" id="tareWeight" value="0.50" oninput="calculatePercent()">
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center text-muted" id="tareWeight" value="0.50" oninput="calculatePercent(); saveDraft();">
                   </div>
                   <div class="col-md-4">
                     <label class="form-label small mb-1 text-success fw-bold">น้ำหนักปูนเม็ดสุทธิ (กก.)</label>
@@ -289,7 +312,7 @@
                     <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1 นิ้ว (1") <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text">น้ำหนักชั่งค้าง</span>
-                      <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight1" placeholder="0.00" required oninput="calculatePercent()">
+                      <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight1" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
                       <span class="input-group-text">กก.</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
@@ -312,7 +335,7 @@
                     <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1/2 นิ้ว (1/2") <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text">น้ำหนักชั่งค้าง</span>
-                      <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight2" placeholder="0.00" required oninput="calculatePercent()">
+                      <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight2" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
                       <span class="input-group-text">กก.</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
@@ -335,7 +358,7 @@
               <div class="alert alert-info d-flex justify-content-between align-items-center p-3 mb-4">
                 <div>
                   <h6 class="fw-bold mb-0">รวม % ค้างตะแกรงสะสมทั้งหมด (Cumulative Retained)</h6>
-                  <small class="text-muted">สูตร: (นน.ค้าง 1" + นน.ค้าง 1/2") / นน.สุทธิ &times; 100</small>
+                  <small class="text-muted">เกณฑ์ควบคุม: ตะแกรง 1" $\le$ 10% | ตะแกรง 1/2" สะสม $\le$ 30%</small>
                 </div>
                 <div class="fs-4 fw-bold text-danger" id="totalPctDisplay">0.00 %</div>
               </div>
@@ -370,21 +393,24 @@
 <script>
 // Web App API Endpoint
 const API_URL = "https://script.google.com/macros/s/AKfycbzeId8QcFaYtW9dswefQ3hz28d3uBs6Ir-UShpVBeMRr10wdDYatzJs8xlNZ11_2Y1D/exec";
+const SUPERVISOR_PIN = "1234"; // รหัส Supervisor PIN สำหรับลบข้อมูล
 
 let rawData = [];
-let chartInstance = null;
+let trendChartInstance = null;
+let benchmarkChartInstance = null;
 
-// เก็บ Base64 ของรูปที่ผ่านการย่อขนาดแล้ว
 let compressedImages = {
   preview1: null,
   preview2: null
 };
 
+// ==========================================
+// 1. INITIALIZATION & NETWORK LISTENERS
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date();
   document.getElementById('entryDate').valueAsDate = today;
   
-  // ตั้งช่วงเดือนย้อนหลัง 3 เดือน
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const past = new Date();
@@ -394,11 +420,106 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filterStartMonth').value = `${past.getFullYear()}-${pastMm}`;
   document.getElementById('filterEndMonth').value = `${yyyy}-${mm}`;
   
-  initChart();
+  initTrendChart();
+  initBenchmarkChart();
   fetchData();
   fetchReporters();
+  restoreDraft();
+  setupNetworkMonitoring();
 });
 
+function setupNetworkMonitoring() {
+  const badge = document.getElementById('networkStatusBadge');
+  window.addEventListener('online', () => {
+    badge.className = "badge bg-success";
+    badge.innerHTML = `<i class="bi bi-wifi me-1"></i>ออนไลน์`;
+    processOfflineQueue();
+  });
+  window.addEventListener('offline', () => {
+    badge.className = "badge bg-danger";
+    badge.innerHTML = `<i class="bi bi-wifi-off me-1"></i>ออฟไลน์ (โหมดบันทึกในเครื่อง)`;
+  });
+}
+
+// ==========================================
+// 2. AUTO-DRAFT & OFFLINE QUEUE
+// ==========================================
+function saveDraft() {
+  const draft = {
+    date: document.getElementById('entryDate').value,
+    shift: document.getElementById('entryShift').value,
+    cm: document.getElementById('entryCm').value,
+    reporter: document.getElementById('entryReporter').value,
+    grossWeight: document.getElementById('grossWeight').value,
+    tareWeight: document.getElementById('tareWeight').value,
+    screen1: document.getElementById('weight1').value,
+    screen2: document.getElementById('weight2').value
+  };
+  localStorage.setItem('clinker_sieve_draft', JSON.stringify(draft));
+  document.getElementById('draftStatusText').innerText = "บันทึกร่างอัตโนมัติแล้ว";
+}
+
+function restoreDraft() {
+  const saved = localStorage.getItem('clinker_sieve_draft');
+  if (saved) {
+    try {
+      const draft = JSON.parse(saved);
+      if (draft.date) document.getElementById('entryDate').value = draft.date;
+      if (draft.shift) document.getElementById('entryShift').value = draft.shift;
+      if (draft.cm) document.getElementById('entryCm').value = draft.cm;
+      if (draft.grossWeight) document.getElementById('grossWeight').value = draft.grossWeight;
+      if (draft.tareWeight) document.getElementById('tareWeight').value = draft.tareWeight;
+      if (draft.screen1) document.getElementById('weight1').value = draft.screen1;
+      if (draft.screen2) document.getElementById('weight2').value = draft.screen2;
+      calculatePercent();
+      document.getElementById('draftStatusText').innerText = "กู้คืนข้อมูลร่างสำเร็จ";
+    } catch (e) {
+      console.warn("Restore draft failed:", e);
+    }
+  }
+}
+
+function clearDraft() {
+  localStorage.removeItem('clinker_sieve_draft');
+  document.getElementById('draftStatusText').innerText = "ระบบ Auto-Draft พร้อมทำงาน";
+}
+
+async function processOfflineQueue() {
+  const queue = JSON.parse(localStorage.getItem('offline_upload_queue') || "[]");
+  if (queue.length === 0) return;
+  
+  Swal.fire({
+    title: 'กำลังเชื่อมต่อเน็ต...',
+    text: `พบข้อมูลที่รอส่ง ${queue.length} รายการ กำลังอัปโหลดขึ้นชีตอัตโนมัติ`,
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  const remaining = [];
+  for (const item of queue) {
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(item)
+      });
+      const json = await res.json();
+      if (json.status !== "success") remaining.push(item);
+    } catch (e) {
+      remaining.push(item);
+    }
+  }
+
+  localStorage.setItem('offline_upload_queue', JSON.stringify(remaining));
+  Swal.close();
+  if (remaining.length === 0) {
+    Swal.fire('อัปโหลดข้อมูลสำเร็จ', 'ข้อมูลที่ค้างในโหมดออฟไลน์ถูกส่งขึ้นระบบเรียบร้อยแล้ว', 'success');
+    fetchData();
+  }
+}
+
+// ==========================================
+// 3. CALCULATION & IMAGE COMPRESSION
+// ==========================================
 function calculatePercent() {
   const gross = parseFloat(document.getElementById('grossWeight').value) || 0;
   const tare = parseFloat(document.getElementById('tareWeight').value) || 0;
@@ -408,10 +529,7 @@ function calculatePercent() {
   const w1 = parseFloat(document.getElementById('weight1').value) || 0;
   const w2 = parseFloat(document.getElementById('weight2').value) || 0;
   
-  // 1. คำนวณ % ค้าง 1 นิ้ว
   const pct1 = (w1 / net) * 100;
-  
-  // 2. คำนวณ % ค้าง 1/2 นิ้ว แบบรวมน้ำหนักตะแกรง 1 นิ้วด้วย (สะสม)
   const w2Cumulative = w1 + w2;
   const pct2Cumulative = (w2Cumulative / net) * 100;
   
@@ -420,9 +538,6 @@ function calculatePercent() {
   document.getElementById('totalPctDisplay').innerText = pct2Cumulative.toFixed(2) + ' %';
 }
 
-/**
- * ย่อขนาดภาพไม่เกิน 1,200px และบีบอัดเป็น JPEG 75% ผ่าน Canvas
- */
 function compressAndResizeImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
   return new Promise((resolve, reject) => {
     if (!file) {
@@ -465,9 +580,6 @@ function compressAndResizeImage(file, maxWidth = 1200, maxHeight = 1200, quality
   });
 }
 
-/**
- * รับภาพจาก File Input ย่อขนาดทันทีและแสดง Preview
- */
 async function handleImageSelection(input, previewId) {
   const box = document.getElementById(previewId);
   if (input.files && input.files[0]) {
@@ -488,9 +600,12 @@ async function handleImageSelection(input, previewId) {
   }
 }
 
-function initChart() {
-  const ctx = document.getElementById('screeningChart').getContext('2d');
-  chartInstance = new Chart(ctx, {
+// ==========================================
+// 4. CHARTS CONFIGURATION (TREND & BENCHMARK)
+// ==========================================
+function initTrendChart() {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  trendChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
       labels: [],
@@ -520,26 +635,135 @@ function initChart() {
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'top' },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} %`
+        annotation: {
+          annotations: {
+            specLimit1Inch: {
+              type: 'line',
+              yMin: 10,
+              yMax: 10,
+              borderColor: 'red',
+              borderWidth: 2,
+              borderDash: [6, 6],
+              label: {
+                display: true,
+                content: 'Upper Spec 1" (10%)',
+                position: 'end',
+                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                color: '#fff',
+                font: { size: 10 }
+              }
+            },
+            specLimitHalfInch: {
+              type: 'line',
+              yMin: 30,
+              yMax: 30,
+              borderColor: '#b91c1c',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              label: {
+                display: true,
+                content: 'Upper Spec 1/2" สะสม (30%)',
+                position: 'start',
+                backgroundColor: 'rgba(185, 28, 28, 0.8)',
+                color: '#fff',
+                font: { size: 10 }
+              }
+            }
           }
         }
       },
       scales: {
         y: {
           beginAtZero: true,
+          suggestedMax: 35,
           title: { display: true, text: '% ค้างตะแกรง' },
           ticks: { callback: (v) => v + '%' }
         },
-        x: {
-          title: { display: true, text: 'วันที่ทดสอบ' }
+        x: { title: { display: true, text: 'วันที่ทดสอบ' } }
+      }
+    }
+  });
+}
+
+function initBenchmarkChart() {
+  const ctx = document.getElementById('benchmarkChart').getContext('2d');
+  benchmarkChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['CM 5', 'CM 6', 'CM 7', 'CM 9', 'CM 10', 'CM 11'],
+      datasets: [
+        {
+          label: 'เฉลี่ย % ค้าง 1 นิ้ว',
+          data: [0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(2, 132, 199, 0.8)',
+          borderColor: '#0284c7',
+          borderWidth: 1
+        },
+        {
+          label: 'เฉลี่ย % ค้าง 1/2 นิ้ว สะสม',
+          data: [0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(245, 158, 11, 0.85)',
+          borderColor: '#f59e0b',
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' },
+        annotation: {
+          annotations: {
+            line1: {
+              type: 'line',
+              yMin: 10,
+              yMax: 10,
+              borderColor: 'red',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              label: {
+                display: true,
+                content: 'เกณฑ์ 1" (10%)',
+                position: 'end',
+                backgroundColor: 'red',
+                color: '#fff',
+                font: { size: 9 }
+              }
+            },
+            line2: {
+              type: 'line',
+              yMin: 30,
+              yMax: 30,
+              borderColor: '#b91c1c',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              label: {
+                display: true,
+                content: 'เกณฑ์ 1/2" (30%)',
+                position: 'start',
+                backgroundColor: '#b91c1c',
+                color: '#fff',
+                font: { size: 9 }
+              }
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          suggestedMax: 35,
+          ticks: { callback: (v) => v + '%' }
         }
       }
     }
   });
 }
 
+// ==========================================
+// 5. DATA FETCHING & FILTERING
+// ==========================================
 async function fetchData() {
   Swal.fire({ title: 'กำลังโหลดข้อมูลจากชีต...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
   try {
@@ -554,7 +778,7 @@ async function fetchData() {
     }
   } catch (err) {
     Swal.close();
-    Swal.fire('เชื่อมต่อล้มเหลว', 'กรุณาตรวจสอบการตั้งค่า Deploy Web App ว่าเปิดสิทธิ์ Anyone เรียบร้อยแล้ว', 'error');
+    Swal.fire('เชื่อมต่อล้มเหลว', 'กำลังทำงานในโหมด Offline ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'warning');
   }
 }
 
@@ -568,6 +792,7 @@ async function fetchReporters() {
       json.data.forEach(name => {
         sel.innerHTML += `<option value="${name}">${name}</option>`;
       });
+      restoreDraft();
     }
   } catch (e) {
     document.getElementById('entryReporter').innerHTML = '<option value="ผู้ปฏิบัติงาน">ผู้ปฏิบัติงาน</option>';
@@ -591,7 +816,8 @@ function applyFilters() {
   
   updateDashboardStats(filtered);
   renderTable(filtered);
-  updateChart(filtered);
+  updateTrendChart(filtered);
+  updateBenchmarkChart(startM, endM);
 }
 
 function updateDashboardStats(data) {
@@ -611,7 +837,7 @@ function updateDashboardStats(data) {
   document.getElementById('kpiCount').innerText = `${n} รายการ`;
 }
 
-function updateChart(dataset = null) {
+function updateTrendChart(dataset = null) {
   const data = dataset || getCurrentlyFilteredData();
   const metric = document.getElementById('filterMetric').value;
   const selectedCm = document.getElementById('filterCm').value;
@@ -620,14 +846,46 @@ function updateChart(dataset = null) {
   
   const sorted = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
   
-  chartInstance.data.labels = sorted.map(d => `${d.date} (CM${d.cm}/กะ${d.shift})`);
-  chartInstance.data.datasets[0].data = sorted.map(d => d.percent1);
-  chartInstance.data.datasets[1].data = sorted.map(d => d.percent2);
+  trendChartInstance.data.labels = sorted.map(d => `${d.date} (CM${d.cm}/กะ${d.shift})`);
+  trendChartInstance.data.datasets[0].data = sorted.map(d => d.percent1);
+  trendChartInstance.data.datasets[1].data = sorted.map(d => d.percent2);
   
-  chartInstance.data.datasets[0].hidden = (metric === 'halfInch');
-  chartInstance.data.datasets[1].hidden = (metric === '1inch');
+  trendChartInstance.data.datasets[0].hidden = (metric === 'halfInch');
+  trendChartInstance.data.datasets[1].hidden = (metric === '1inch');
   
-  chartInstance.update();
+  trendChartInstance.update();
+}
+
+function updateBenchmarkChart(startM, endM) {
+  const cmList = ['5', '6', '7', '9', '10', '11'];
+  const avg1List = [];
+  const avg2List = [];
+  
+  cmList.forEach(cm => {
+    const cmData = rawData.filter(d => {
+      if (d.cm !== cm) return false;
+      if (d.date) {
+        const m = d.date.substring(0, 7);
+        if (startM && m < startM) return false;
+        if (endM && m > endM) return false;
+      }
+      return true;
+    });
+    
+    if (cmData.length > 0) {
+      const a1 = cmData.reduce((acc, c) => acc + c.percent1, 0) / cmData.length;
+      const a2 = cmData.reduce((acc, c) => acc + c.percent2, 0) / cmData.length;
+      avg1List.push(Number(a1.toFixed(2)));
+      avg2List.push(Number(a2.toFixed(2)));
+    } else {
+      avg1List.push(0);
+      avg2List.push(0);
+    }
+  });
+
+  benchmarkChartInstance.data.datasets[0].data = avg1List;
+  benchmarkChartInstance.data.datasets[1].data = avg2List;
+  benchmarkChartInstance.update();
 }
 
 function getCurrentlyFilteredData() {
@@ -656,6 +914,9 @@ function renderTable(data) {
   }
   
   data.forEach(row => {
+    const isOut1 = row.percent1 > 10.0;
+    const isOut2 = row.percent2 > 30.0;
+    
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="fw-semibold text-secondary">${row.id}</td>
@@ -664,14 +925,14 @@ function renderTable(data) {
       <td><span class="badge bg-primary">CM ${row.cm}</span></td>
       <td>${row.netWeight.toFixed(2)}</td>
       <td>${row.screen1.toFixed(2)}</td>
-      <td class="text-primary fw-bold">${row.percent1.toFixed(2)}%</td>
+      <td><span class="${isOut1 ? 'badge-out-spec' : 'text-primary fw-bold'}">${row.percent1.toFixed(2)}%</span></td>
       <td>${row.screen2.toFixed(2)}</td>
-      <td class="text-warning fw-bold">${row.percent2.toFixed(2)}%</td>
+      <td><span class="${isOut2 ? 'badge-out-spec' : 'text-warning fw-bold'}">${row.percent2.toFixed(2)}%</span></td>
       <td class="small">${row.reporter}</td>
       <td>${row.screen1Image ? `<a href="javascript:void(0)" onclick="zoomImage('${row.screen1Image}')"><i class="bi bi-image text-primary fs-5"></i></a>` : '-'}</td>
       <td>${row.screen2Image ? `<a href="javascript:void(0)" onclick="zoomImage('${row.screen2Image}')"><i class="bi bi-image text-warning fs-5"></i></a>` : '-'}</td>
       <td>
-        <button class="btn btn-outline-danger btn-sm p-1" onclick="deleteItem('${row.id}')"><i class="bi bi-trash"></i></button>
+        <button class="btn btn-outline-danger btn-sm p-1" onclick="deleteItemWithPin('${row.id}')" title="ลบข้อมูล (ต้องใช้ PIN)"><i class="bi bi-trash"></i></button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -683,49 +944,59 @@ function zoomImage(url) {
   new bootstrap.Modal(document.getElementById('imageModal')).show();
 }
 
+// ==========================================
+// 6. FORM SUBMISSION (WITH OFFLINE FALLBACK)
+// ==========================================
 async function submitForm(e) {
   e.preventDefault();
   
-  // ตรวจสอบเงื่อนไขบังคับแนบรูปภาพทั้งสองรูป
   if (!compressedImages.preview1) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'กรุณาแนบรูปภาพ',
-      text: 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1 นิ้ว ก่อนบันทึกข้อมูล'
-    });
+    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1 นิ้ว ก่อนบันทึก', 'warning');
     return;
   }
-  
   if (!compressedImages.preview2) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'กรุณาแนบรูปภาพ',
-      text: 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1/2 นิ้ว ก่อนบันทึกข้อมูล'
-    });
+    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1/2 นิ้ว ก่อนบันทึก', 'warning');
     return;
   }
 
   const btn = document.getElementById('saveBtn');
   btn.disabled = true;
   
+  const payload = {
+    action: "save",
+    data: {
+      date: document.getElementById('entryDate').value,
+      shift: document.getElementById('entryShift').value,
+      cm: document.getElementById('entryCm').value,
+      reporter: document.getElementById('entryReporter').value,
+      grossWeight: document.getElementById('grossWeight').value,
+      tareWeight: document.getElementById('tareWeight').value,
+      screen1: document.getElementById('weight1').value,
+      screen2: document.getElementById('weight2').value,
+      screen1Image: compressedImages.preview1,
+      screen2Image: compressedImages.preview2
+    }
+  };
+
+  // ตรวจจับสัญญาณเน็ต ถ้า Offline ให้นำเข้าคิวส่งในเครื่อง
+  if (!navigator.onLine) {
+    const queue = JSON.parse(localStorage.getItem('offline_upload_queue') || "[]");
+    queue.push(payload);
+    localStorage.setItem('offline_upload_queue', JSON.stringify(queue));
+    
+    Swal.fire({
+      icon: 'info',
+      title: 'บันทึกในเครื่องเรียบร้อย (Offline)',
+      text: 'ไม่มีสัญญาณเน็ต ข้อมูลถูกบันทึกไว้ในคิว จะส่งขึ้น Google Sheets อัตโนมัติเมื่อต่อเน็ตติด'
+    });
+    
+    resetForm();
+    btn.disabled = false;
+    return;
+  }
+
   try {
     Swal.fire({ title: 'กำลังบันทึกข้อมูลและอัปโหลดรูปภาพ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-    
-    const payload = {
-      action: "save",
-      data: {
-        date: document.getElementById('entryDate').value,
-        shift: document.getElementById('entryShift').value,
-        cm: document.getElementById('entryCm').value,
-        reporter: document.getElementById('entryReporter').value,
-        grossWeight: document.getElementById('grossWeight').value,
-        tareWeight: document.getElementById('tareWeight').value,
-        screen1: document.getElementById('weight1').value,
-        screen2: document.getElementById('weight2').value,
-        screen1Image: compressedImages.preview1,
-        screen2Image: compressedImages.preview2
-      }
-    };
     
     const res = await fetch(API_URL, {
       method: "POST",
@@ -735,39 +1006,57 @@ async function submitForm(e) {
     
     if (json.status === "success") {
       Swal.fire('สำเร็จ', json.message, 'success');
-      document.getElementById('clinkerForm').reset();
-      
-      // ล้างค่าและพรีวิวภาพ
-      compressedImages.preview1 = null;
-      compressedImages.preview2 = null;
-      document.getElementById('preview1').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
-      document.getElementById('preview2').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
-      calculatePercent();
-      
-      // สลับหน้าไปยัง Dashboard และดึงข้อมูลล่าสุด
+      resetForm();
+      clearDraft();
       bootstrap.Tab.getInstance(document.getElementById('dashboard-tab')).show();
       fetchData();
     } else {
       Swal.fire('ข้อผิดพลาด', json.message, 'error');
     }
   } catch (err) {
-    Swal.fire('ข้อผิดพลาด', err.message, 'error');
+    // กรณี fetch fail จากเน็ตหลุดกลางคัน
+    const queue = JSON.parse(localStorage.getItem('offline_upload_queue') || "[]");
+    queue.push(payload);
+    localStorage.setItem('offline_upload_queue', JSON.stringify(queue));
+    
+    Swal.fire('เครือข่ายขัดข้อง', 'บันทึกข้อมูลลงในคิวสำรองของเครื่องแล้ว ระบบจะซิงก์ให้อัตโนมัติเมื่อสัญญาณเน็ตกลับมา', 'info');
+    resetForm();
   } finally {
     btn.disabled = false;
   }
 }
 
-function deleteItem(id) {
+function resetForm() {
+  document.getElementById('clinkerForm').reset();
+  compressedImages.preview1 = null;
+  compressedImages.preview2 = null;
+  document.getElementById('preview1').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
+  document.getElementById('preview2').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
+  calculatePercent();
+}
+
+// ==========================================
+// 7. SUPERVISOR PIN PROTECTION & SOFT DELETE
+// ==========================================
+function deleteItemWithPin(id) {
   Swal.fire({
-    title: 'ยืนยันการลบ?',
-    text: `ต้องการลบรายการ ${id} หรือไม่?`,
-    icon: 'warning',
+    title: 'ยืนยันรหัสผ่านหัวหน้างาน',
+    input: 'password',
+    inputLabel: 'กรุณากรอกรหัส PIN 4 หลักเพื่อยืนยันการลบข้อมูล',
+    inputPlaceholder: 'PIN (เช่น 1234)',
+    inputAttributes: { maxlength: 4, autocapitalize: 'off', autocorrect: 'off' },
     showCancelButton: true,
-    confirmButtonColor: '#d33',
-    confirmButtonText: 'ลบข้อมูล'
-  }).then(async result => {
+    confirmButtonText: 'ยืนยัน PIN',
+    cancelButtonText: 'ยกเลิก',
+    preConfirm: (pin) => {
+      if (pin !== SUPERVISOR_PIN) {
+        Swal.showValidationMessage('รหัส PIN ไม่ถูกต้อง!');
+      }
+      return pin === SUPERVISOR_PIN;
+    }
+  }).then(async (result) => {
     if (result.isConfirmed) {
-      Swal.fire({ title: 'กำลังลบ...', didOpen: () => Swal.showLoading() });
+      Swal.fire({ title: 'กำลังปรับปรุงสถานะ...', didOpen: () => Swal.showLoading() });
       try {
         const res = await fetch(API_URL, {
           method: "POST",
