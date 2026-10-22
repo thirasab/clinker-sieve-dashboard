@@ -69,12 +69,12 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
 
-    .card h4 {
-      font-size: clamp(1.2rem, 2.8vw, 1.65rem);
+    .card h5 {
+      font-size: clamp(1.1rem, 2.5vw, 1.45rem);
     }
 
     #totalPctDisplay {
-      font-size: clamp(1.25rem, 3.2vw, 1.75rem) !important;
+      font-size: clamp(1.15rem, 3vw, 1.5rem) !important;
     }
 
     .calc-box {
@@ -198,7 +198,7 @@
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry-view" type="button" role="tab">
-        <i class="bi bi-clipboard2-plus me-1"></i> ป้อนข้อมูลการร่อนตะแกรง (25 mm, 12.5 mm, 5 mm)
+        <i class="bi bi-clipboard2-plus me-1"></i> ป้อนข้อมูลการร่อนตะแกรง
       </button>
     </li>
   </ul>
@@ -211,7 +211,7 @@
       <div class="card p-3 mb-3 bg-white border-primary border-opacity-25">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
           <div class="d-flex align-items-center gap-2">
-            <span class="fw-bold text-dark"><i class="bi bi-shield-check text-success me-1"></i>เกณฑ์ควบคุมปัจจุบันใน Sheet:</span>
+            <span class="fw-bold text-dark"><i class="bi bi-shield-check text-success me-1"></i>เกณฑ์ควบคุมปัจจุบัน:</span>
             <div class="limit-badge-box small">
               <span>25 mm: <b class="text-danger" id="currentLimit1Text">&le; 10.00%</b></span>
               <span class="text-muted">|</span>
@@ -222,23 +222,21 @@
           </div>
           <div class="d-flex gap-2">
             <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#standardsCollapse">
-              <i class="bi bi-book me-1"></i> มาตรฐาน Clinker Granulometry
+              <i class="bi bi-book me-1"></i> มาตรฐาน Clinker
             </button>
             <button class="btn btn-sm btn-primary" onclick="openLimitSettingsModal()">
-              <i class="bi bi-sliders me-1"></i> ตั้งค่าเกณฑ์ควบคุม
+              <i class="bi bi-sliders me-1"></i> ตั้งค่าเกณฑ์
             </button>
           </div>
         </div>
       </div>
 
-      <!-- ส่วนขยาย: ตารางแสดงมาตรฐานสากล Clinker Granulometry (4 คอลัมน์) -->
+      <!-- ตารางแสดงมาตรฐานสากล Clinker Granulometry -->
       <div class="collapse mb-3" id="standardsCollapse">
         <div class="card p-3 border-primary border-2 bg-white">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-bold text-primary mb-0">
-              <i class="bi bi-award-fill me-1"></i>เกณฑ์ขนาดเม็ดปูนเม็ด (Clinker Granulometry) ที่เหมาะสมตามมาตรฐานสากลโรงงานปูนซีเมนต์
-            </h6>
-            <span class="badge bg-primary text-white">ข้อมูลจากชีต ClinkerStandards</span>
+            <h6 class="fw-bold text-primary mb-0"><i class="bi bi-award-fill me-1"></i>มาตรฐานสากลโรงงานปูนซีเมนต์</h6>
+            <span class="badge bg-primary text-white">ข้อมูลจากชีต</span>
           </div>
           <div class="table-responsive">
             <table class="table table-sm table-bordered table-standards align-middle mb-0">
@@ -251,14 +249,14 @@
                 </tr>
               </thead>
               <tbody id="standardsTableBody">
-                <tr><td colspan="4" class="text-center py-2 text-muted">กำลังดึงเกณฑ์มาตรฐานจากชีต...</td></tr>
+                <tr><td colspan="4" class="text-center py-2 text-muted">กำลังดึงข้อมูล...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ตัวกรองค้นหารายเดือน -->
+      <!-- ตัวกรองค้นหา -->
       <div class="card p-3 mb-3 bg-white">
         <div class="row g-2 align-items-end">
           <div class="col-6 col-md-3">
@@ -284,7 +282,7 @@
           <div class="col-6 col-md-3">
             <label class="form-label small fw-bold">แสดงเส้นกราฟ Trend</label>
             <select class="form-select form-select-sm" id="filterMetric" onchange="updateTrendChart()">
-              <option value="all">แสดงทั้งหมด (25 mm, 12.5 mm, 5 mm สะสม)</option>
+              <option value="all">แสดงทั้งหมด (25, 12.5, 5 mm สะสม)</option>
               <option value="25mm">เฉพาะ % ค้าง 25 mm</option>
               <option value="12_5mm">เฉพาะ % ค้าง 12.5 mm (สะสม)</option>
               <option value="5mm">เฉพาะ % ค้าง 5 mm (สะสม)</option>
@@ -293,35 +291,47 @@
         </div>
       </div>
 
-      <!-- Quick KPI Cards -->
+      <!-- Quick KPI Cards (เพิ่มการ์ดเม็ดสมบูรณ์) -->
       <div class="row g-2 mb-3">
-        <div class="col-6 col-md-3">
-          <div class="card p-3 border-start border-primary border-4">
-            <div class="text-muted small" id="kpiLabel1">เฉลี่ย % ค้าง 25 mm (&le; 10%)</div>
-            <h4 class="fw-bold mb-0 text-primary" id="kpiAvg1">- %</h4>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="card p-2 border-start border-primary border-4 h-100">
+            <div class="text-muted" style="font-size: 0.75rem;" id="kpiLabel1">ค้าง 25 mm (&le; 10%)</div>
+            <h5 class="fw-bold mb-0 text-primary" id="kpiAvg1">- %</h5>
           </div>
         </div>
-        <div class="col-6 col-md-3">
-          <div class="card p-3 border-start border-warning border-4">
-            <div class="text-muted small" id="kpiLabel2">เฉลี่ย 12.5 mm สะสม (&le; 30%)</div>
-            <h4 class="fw-bold mb-0 text-warning" id="kpiAvg2">- %</h4>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="card p-2 border-start border-warning border-4 h-100">
+            <div class="text-muted" style="font-size: 0.75rem;" id="kpiLabel2">12.5 mm สะสม (&le; 30%)</div>
+            <h5 class="fw-bold mb-0 text-warning" id="kpiAvg2">- %</h5>
           </div>
         </div>
-        <div class="col-6 col-md-3">
-          <div class="card p-3 border-start border-success border-4">
-            <div class="text-muted small" id="kpiLabel3">เฉลี่ย 5 mm สะสม (&ge; 85%)</div>
-            <h4 class="fw-bold mb-0 text-success" id="kpiAvg3">- %</h4>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="card p-2 border-start border-success border-4 h-100">
+            <div class="text-muted" style="font-size: 0.75rem;" id="kpiLabel3">5 mm สะสม (&ge; 85%)</div>
+            <h5 class="fw-bold mb-0 text-success" id="kpiAvg3">- %</h5>
           </div>
         </div>
-        <div class="col-6 col-md-3">
-          <div class="card p-3 border-start border-danger border-4">
-            <div class="text-muted small">เฉลี่ย ฝุ่น &lt; 5 mm (&le; 15%)</div>
-            <h4 class="fw-bold mb-0 text-danger" id="kpiAvgFines">- %</h4>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="card p-2 border-start border-info border-4 h-100" style="background-color: #f0fdfa;">
+            <div class="text-muted" style="font-size: 0.75rem;">เม็ดสมบูรณ์ (50-65%)</div>
+            <h5 class="fw-bold mb-0 text-info" id="kpiAvgIdeal">- %</h5>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="card p-2 border-start border-danger border-4 h-100">
+            <div class="text-muted" style="font-size: 0.75rem;">ฝุ่น &lt; 5 mm (&le; 15%)</div>
+            <h5 class="fw-bold mb-0 text-danger" id="kpiAvgFines">- %</h5>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="card p-2 border-start border-secondary border-4 h-100">
+            <div class="text-muted" style="font-size: 0.75rem;">จำนวนตัวอย่าง</div>
+            <h5 class="fw-bold mb-0 text-secondary" id="kpiCount">0 รายการ</h5>
           </div>
         </div>
       </div>
 
-      <!-- กราฟที่ 1: กราฟเส้นการกระจายตัวของขนาดเม็ดปูนเม็ดสะสม (Cumulative Granulometry S-Curve) -->
+      <!-- กราฟที่ 1: Cumulative Granulometry S-Curve -->
       <div class="card p-3 mb-3 border-2 border-primary border-opacity-25">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="fw-bold mb-0 text-dark">
@@ -329,29 +339,28 @@
           </h6>
           <span class="badge bg-primary text-white" id="granulometrySubTitle">เฉลี่ยตามตัวกรองที่เลือก</span>
         </div>
-        <div style="height: 330px; position: relative;">
+        <div style="height: 300px; position: relative;">
           <canvas id="granulometryChart"></canvas>
         </div>
       </div>
 
-      <!-- กราฟที่ 2: CM Benchmark Bar Chart (3 แท่งเปรียบเทียบ 6 หมอบด) -->
+      <!-- กราฟที่ 2: CM Benchmark Bar Chart -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill me-1 text-primary"></i>กราฟแท่งเปรียบเทียบค่าเฉลี่ยรายหมอบด (CM5 vs CM6 vs CM7 vs CM9 vs CM10 vs CM11)</h6>
-          <span class="badge bg-light text-muted border">Benchmark 25 mm, 12.5 mm, 5 mm</span>
         </div>
-        <div style="height: 320px; position: relative;">
+        <div style="height: 300px; position: relative;">
           <canvas id="benchmarkChart"></canvas>
         </div>
       </div>
 
-      <!-- กราฟที่ 3: Trend Line Chart ตามช่วงเวลา พร้อมเส้น Spec Limits -->
+      <!-- กราฟที่ 3: Trend Line Chart -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรงตามลำดับเวลา พร้อมเส้นควบคุมมาตรฐาน</h6>
           <span class="badge bg-light text-dark border" id="chartSubTitle">แสดงผลทุก CM</span>
         </div>
-        <div style="height: 340px; position: relative;">
+        <div style="height: 320px; position: relative;">
           <canvas id="trendChart"></canvas>
         </div>
       </div>
@@ -371,18 +380,18 @@
                 <th>กะ</th>
                 <th>CM</th>
                 <th>นน.สุทธิ</th>
-                <th>ค้าง 25 mm (กก.)</th>
-                <th>% ค้าง 25 mm</th>
-                <th>ค้าง 12.5 mm (กก.)</th>
-                <th>% 12.5 mm (สะสม)</th>
-                <th>ค้าง 5 mm (กก.)</th>
-                <th>% 5 mm (สะสม)</th>
-                <th>ฝุ่น &lt;5 mm (%)</th>
+                <th>ค้าง 25 mm</th>
+                <th>% 25 mm</th>
+                <th>ค้าง 12.5 mm</th>
+                <th>% 12.5 mm สะสม</th>
+                <th>ค้าง 5 mm</th>
+                <th>% 5 mm สะสม</th>
+                <th>ฝุ่น &lt;5 mm</th>
                 <th>ผู้รายงาน</th>
-                <th>รูป 25 mm</th>
-                <th>รูป 12.5 mm</th>
-                <th>รูป 5 mm</th>
-                <th>จัดการ (PIN)</th>
+                <th>รูป 25mm</th>
+                <th>รูป 12.5mm</th>
+                <th>รูป 5mm</th>
+                <th>จัดการ</th>
               </tr>
             </thead>
             <tbody>
@@ -475,7 +484,7 @@
                 </div>
               </div>
 
-              <!-- กรอกค่าน้ำหนักค้าง 3 ตะแกรง (25 mm, 12.5 mm, 5 mm) -->
+              <!-- กรอกค่าน้ำหนักค้าง 3 ตะแกรง -->
               <div class="row g-3 mb-3">
                 <!-- ตะแกรง 25 mm -->
                 <div class="col-md-4">
@@ -529,7 +538,7 @@
                       <span class="input-group-text small">กก.</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="small text-muted">% สะสม (รวม 25+12.5):</span>
+                      <span class="small text-muted">% สะสม (รวมชั้นบน):</span>
                       <span class="fw-bold text-success" id="pct3Display">0.00 %</span>
                     </div>
                     <div>
@@ -541,27 +550,33 @@
                 </div>
               </div>
 
-              <!-- กล่องสรุปสถานะการกระจายขนาดเม็ด -->
+              <!-- กล่องสรุปสถานะการกระจายขนาดเม็ด พร้อม Grindability Indicator -->
               <div class="alert alert-light border p-3 mb-4" id="statusAlertBox">
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 border-bottom pb-2">
-                  <h6 class="fw-bold mb-0">ผลวิเคราะห์การกระจายตัวของขนาดเม็ด (Granulometry Summary)</h6>
+                  <h6 class="fw-bold mb-0">ผลวิเคราะห์ (Granulometry Summary) <span id="grindabilityBadge"></span></h6>
                   <div class="fw-bold fs-5" id="totalPctDisplay">สถานะ: รอการคำนวณ</div>
                 </div>
-                <div class="row g-2 text-center small">
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 25 mm (ก้อนใหญ่)</span>
+                
+                <!-- จัดหน้าจอสรุปเป็น 5 คอลัมน์ด้วย Flexbox Grid -->
+                <div class="row g-2 text-center small mt-2">
+                  <div class="col-4 col-md-2">
+                    <span class="text-muted d-block">25 mm</span>
                     <b id="sumPct1Text" class="text-primary">-</b>
                   </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 12.5 mm สะสม (ก้อนหยาบ)</span>
+                  <div class="col-4 col-md-2">
+                    <span class="text-muted d-block">12.5 mm สะสม</span>
                     <b id="sumPct2Text" class="text-warning">-</b>
                   </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 5 mm สะสม (รวม)</span>
-                    <b id="sumPct3Text" class="text-success">-</b>
+                  <div class="col-4 col-md-3">
+                    <span class="text-muted d-block fw-bold" style="color: #0891b2;">เม็ดสมบูรณ์ (5-12.5)</span>
+                    <b id="sumPctIdealText" class="fs-6" style="color: #0891b2;">-</b>
                   </div>
                   <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ฝุ่นปูนเม็ด (&lt; 5 mm)</span>
+                    <span class="text-muted d-block">5 mm สะสม</span>
+                    <b id="sumPct3Text" class="text-success">-</b>
+                  </div>
+                  <div class="col-6 col-md-2">
+                    <span class="text-muted d-block">ฝุ่น &lt; 5 mm</span>
                     <b id="sumPctFinesText" class="text-danger">-</b>
                   </div>
                 </div>
@@ -599,7 +614,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzeId8QcFaYtW9dswefQ3hz
 const SUPERVISOR_PIN = "1234";
 
 let rawData = [];
-let currentLimits = { max25mm: 10.0, max12_5mm: 30.0, min5mm: 85.0, max1Inch: 10.0, maxHalfInch: 30.0 };
+let currentLimits = { max25mm: 10.0, max12_5mm: 30.0, min5mm: 85.0 };
 let trendChartInstance = null;
 let benchmarkChartInstance = null;
 let granulometryChartInstance = null;
@@ -649,7 +664,7 @@ function setupNetworkMonitoring() {
 }
 
 // ==========================================
-// 2. MODAL & API FOR CONTROL LIMITS (mm)
+// 2. MODAL & API FOR CONTROL LIMITS
 // ==========================================
 function openLimitSettingsModal() {
   const val25 = currentLimits.max25mm || currentLimits.max1Inch || 10.0;
@@ -686,14 +701,14 @@ function openLimitSettingsModal() {
       const pin = document.getElementById('swalPin').value;
 
       if (isNaN(l25) || l25 <= 0 || isNaN(l12_5) || l12_5 <= 0 || isNaN(l5) || l5 <= 0) {
-        Swal.showValidationMessage('กรุณากรอกตัวเลขเกณฑ์ควบคุมให้ถูกต้อง');
+        Swal.showValidationMessage('กรุณากรอกตัวเลขเกณฑ์ให้ถูกต้อง');
         return false;
       }
       if (pin !== SUPERVISOR_PIN) {
         Swal.showValidationMessage('รหัส Supervisor PIN ไม่ถูกต้อง!');
         return false;
       }
-      return { max25mm: l25, max12_5mm: l12_5, min5mm: l5, max1Inch: l25, maxHalfInch: l12_5 };
+      return { max25mm: l25, max12_5mm: l12_5, min5mm: l5 };
     }
   }).then(async (result) => {
     if (result.isConfirmed) {
@@ -737,14 +752,12 @@ function updateLimitsUI() {
   document.getElementById('kpiLabel2').innerText = `เฉลี่ย 12.5 mm สะสม (\u2264 ${val12_5}%)`;
   document.getElementById('kpiLabel3').innerText = `เฉลี่ย 5 mm สะสม (\u2265 ${val5}%)`;
 
-  // อัปเดตกราฟ Granulometry S-Curve Spec
   if (granulometryChartInstance) {
     const finesLimit = Math.max(0, 100 - val5);
     granulometryChartInstance.data.datasets[1].data = [val25, val12_5, val5, finesLimit];
     granulometryChartInstance.update();
   }
 
-  // อัปเดตกราฟ Trend Annotations
   if (trendChartInstance && trendChartInstance.options.plugins.annotation) {
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMin = val25;
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMax = val25;
@@ -760,7 +773,6 @@ function updateLimitsUI() {
     trendChartInstance.update();
   }
 
-  // อัปเดตกราฟ Benchmark Annotations
   if (benchmarkChartInstance && benchmarkChartInstance.options.plugins.annotation) {
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMin = val25;
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMax = val25;
@@ -882,7 +894,7 @@ async function processOfflineQueue() {
 }
 
 // ==========================================
-// 4. CALCULATION & REAL-TIME SPEC CHECK (mm)
+// 4. CALCULATION & REAL-TIME SPEC CHECK
 // ==========================================
 function calculatePercent() {
   const gross = parseFloat(document.getElementById('grossWeight').value) || 0;
@@ -908,6 +920,9 @@ function calculatePercent() {
   // 4. % ฝุ่น < 5 mm
   const pctFines = Math.max(0, 100 - pct3);
   
+  // 5. สัดส่วนเม็ดสมบูรณ์ (Ideal Fraction 5 - 12.5 mm)
+  const pctIdeal = (w3 / net) * 100; // หรือ pct3 - pct2
+  
   const val25 = currentLimits.max25mm || currentLimits.max1Inch || 10.0;
   const val12_5 = currentLimits.max12_5mm || currentLimits.maxHalfInch || 30.0;
   const val5 = currentLimits.min5mm || 85.0;
@@ -925,9 +940,20 @@ function calculatePercent() {
   document.getElementById('sumPct2Text').innerText = pct2.toFixed(2) + ' %';
   document.getElementById('sumPct3Text').innerText = pct3.toFixed(2) + ' %';
   document.getElementById('sumPctFinesText').innerText = pctFines.toFixed(2) + ' %';
+  document.getElementById('sumPctIdealText').innerText = pctIdeal.toFixed(2) + ' %';
 
   const totalDisplay = document.getElementById('totalPctDisplay');
   const alertBox = document.getElementById('statusAlertBox');
+  const grindBadge = document.getElementById('grindabilityBadge');
+
+  // แจ้งเตือนสัดส่วนเม็ดสมบูรณ์ (Grindability Status)
+  if(pctIdeal >= 50 && pctIdeal <= 65) {
+    grindBadge.innerHTML = `<span class="badge bg-info text-dark ms-2"><i class="bi bi-star-fill text-warning"></i> บดง่าย (Ideal Nodule)</span>`;
+  } else if (pctIdeal < 50) {
+    grindBadge.innerHTML = `<span class="badge bg-secondary ms-2">ค่อนข้างหยาบ/ฝุ่นเยอะ</span>`;
+  } else {
+    grindBadge.innerHTML = `<span class="badge bg-secondary ms-2">เม็ดขนาดกลางกระจุกตัว</span>`;
+  }
 
   if (isOutOfSpec) {
     alertBox.className = "alert alert-danger border p-3 mb-4";
@@ -940,7 +966,8 @@ function calculatePercent() {
   }
 }
 
-function compressAndResizeImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
+// ลดขนาดความละเอียดภาพ Max=900px คุณภาพ 0.70 เพื่อประหยัดพื้นที่ Drive
+function compressAndResizeImage(file, maxWidth = 900, maxHeight = 900, quality = 0.70) {
   return new Promise((resolve, reject) => {
     if (!file) {
       resolve(null);
@@ -989,7 +1016,8 @@ async function handleImageSelection(input, previewId) {
     box.innerHTML = `<div class="spinner-border spinner-border-sm text-primary" role="status"></div> <span class="small ms-1 text-muted">ย่อขนาด...</span>`;
     
     try {
-      const compressedData = await compressAndResizeImage(file, 1200, 1200, 0.75);
+      // เรียกใช้ฟังก์ชันบีบอัดระดับ 900x900px
+      const compressedData = await compressAndResizeImage(file, 900, 900, 0.70);
       compressedImages[previewId] = compressedData;
       box.innerHTML = `<img src="${compressedData}">`;
     } catch (err) {
@@ -1003,21 +1031,15 @@ async function handleImageSelection(input, previewId) {
 }
 
 // ==========================================
-// 5. CHARTS CONFIGURATION (หน่วย mm)
+// 5. CHARTS CONFIGURATION
 // ==========================================
 
-// 5.1 กราฟ S-Curve ค้างสะสม
 function initGranulometryChart() {
   const ctx = document.getElementById('granulometryChart').getContext('2d');
   granulometryChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: [
-        '1. > 25 mm', 
-        '2. > 12.5 mm (สะสม)', 
-        '3. > 5 mm (สะสม)', 
-        '4. < 5 mm (ฝุ่นลอดผ่าน)'
-      ],
+      labels: ['1. > 25 mm', '2. > 12.5 mm (สะสม)', '3. > 5 mm (สะสม)', '4. < 5 mm (ฝุ่นลอดผ่าน)'],
       datasets: [
         {
           label: '% ค้างสะสมจริง (Actual Average Curve)',
@@ -1052,28 +1074,16 @@ function initGranulometryChart() {
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'top', labels: { font: { family: 'Prompt', size: 12 } } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} %`
-          }
-        }
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} %` } }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-          title: { display: true, text: '% ค้างสะสม / % ฝุ่น', font: { family: 'Prompt', weight: 'bold' } },
-          ticks: { callback: (v) => v + '%' }
-        },
-        x: {
-          title: { display: true, text: 'ลำดับขั้นตอนการร่อนตะแกรงปูนเม็ด (mm)', font: { family: 'Prompt', weight: 'bold' } }
-        }
+        y: { beginAtZero: true, max: 100, title: { display: true, text: '% ค้างสะสม / % ฝุ่น', font: { family: 'Prompt', weight: 'bold' } }, ticks: { callback: (v) => v + '%' } },
+        x: { title: { display: true, text: 'ลำดับขั้นตอนการร่อนตะแกรงปูนเม็ด (mm)', font: { family: 'Prompt', weight: 'bold' } } }
       }
     }
   });
 }
 
-// 5.2 กราฟ Trend ตามช่วงเวลา
 function initTrendChart() {
   const ctx = document.getElementById('trendChart').getContext('2d');
   trendChartInstance = new Chart(ctx, {
@@ -1081,33 +1091,9 @@ function initTrendChart() {
     data: {
       labels: [],
       datasets: [
-        {
-          label: '% ค้าง 25 mm',
-          data: [],
-          borderColor: '#0284c7',
-          backgroundColor: 'rgba(2, 132, 199, 0.1)',
-          tension: 0.25,
-          borderWidth: 2,
-          fill: false
-        },
-        {
-          label: '% ค้าง 12.5 mm (สะสม)',
-          data: [],
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          tension: 0.25,
-          borderWidth: 2,
-          fill: false
-        },
-        {
-          label: '% ค้าง 5 mm (สะสม)',
-          data: [],
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          tension: 0.25,
-          borderWidth: 2.5,
-          fill: true
-        }
+        { label: '% ค้าง 25 mm', data: [], borderColor: '#0284c7', backgroundColor: 'rgba(2, 132, 199, 0.1)', tension: 0.25, borderWidth: 2, fill: false },
+        { label: '% ค้าง 12.5 mm (สะสม)', data: [], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', tension: 0.25, borderWidth: 2, fill: false },
+        { label: '% ค้าง 5 mm (สะสม)', data: [], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.25, borderWidth: 2.5, fill: true }
       ]
     },
     options: {
@@ -1118,71 +1104,20 @@ function initTrendChart() {
         legend: { position: 'top' },
         annotation: {
           annotations: {
-            specLimit1Inch: {
-              type: 'line',
-              yMin: 10,
-              yMax: 10,
-              borderColor: 'red',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
-              label: {
-                display: true,
-                content: 'Upper Spec 25 mm (10%)',
-                position: 'end',
-                backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                color: '#fff',
-                font: { size: 9 }
-              }
-            },
-            specLimitHalfInch: {
-              type: 'line',
-              yMin: 30,
-              yMax: 30,
-              borderColor: '#b91c1c',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
-              label: {
-                display: true,
-                content: 'Upper Spec 12.5 mm (30%)',
-                position: 'start',
-                backgroundColor: 'rgba(185, 28, 28, 0.8)',
-                color: '#fff',
-                font: { size: 9 }
-              }
-            },
-            specLimit5mm: {
-              type: 'line',
-              yMin: 85,
-              yMax: 85,
-              borderColor: '#059669',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
-              label: {
-                display: true,
-                content: 'Lower Spec 5 mm (85%)',
-                position: 'center',
-                backgroundColor: 'rgba(5, 150, 105, 0.8)',
-                color: '#fff',
-                font: { size: 9 }
-              }
-            }
+            specLimit1Inch: { type: 'line', yMin: 10, yMax: 10, borderColor: 'red', borderWidth: 1.5, borderDash: [5, 5], label: { display: true, content: 'Upper Spec 25 mm (10%)', position: 'end', backgroundColor: 'rgba(239, 68, 68, 0.8)', color: '#fff', font: { size: 9 } } },
+            specLimitHalfInch: { type: 'line', yMin: 30, yMax: 30, borderColor: '#b91c1c', borderWidth: 1.5, borderDash: [5, 5], label: { display: true, content: 'Upper Spec 12.5 mm (30%)', position: 'start', backgroundColor: 'rgba(185, 28, 28, 0.8)', color: '#fff', font: { size: 9 } } },
+            specLimit5mm: { type: 'line', yMin: 85, yMax: 85, borderColor: '#059669', borderWidth: 1.5, borderDash: [5, 5], label: { display: true, content: 'Lower Spec 5 mm (85%)', position: 'center', backgroundColor: 'rgba(5, 150, 105, 0.8)', color: '#fff', font: { size: 9 } } }
           }
         }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          suggestedMax: 100,
-          title: { display: true, text: '% ค้างตะแกรง' },
-          ticks: { callback: (v) => v + '%' }
-        },
+        y: { beginAtZero: true, suggestedMax: 100, title: { display: true, text: '% ค้างตะแกรง' }, ticks: { callback: (v) => v + '%' } },
         x: { title: { display: true, text: 'วันที่ทดสอบ' } }
       }
     }
   });
 }
 
-// 5.3 กราฟ Benchmark เปรียบเทียบ 6 หมอบด
 function initBenchmarkChart() {
   const ctx = document.getElementById('benchmarkChart').getContext('2d');
   benchmarkChartInstance = new Chart(ctx, {
@@ -1190,24 +1125,9 @@ function initBenchmarkChart() {
     data: {
       labels: ['CM 5', 'CM 6', 'CM 7', 'CM 9', 'CM 10', 'CM 11'],
       datasets: [
-        {
-          label: 'เฉลี่ย 25 mm',
-          data: [0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(2, 132, 199, 0.85)',
-          borderWidth: 1
-        },
-        {
-          label: 'เฉลี่ย 12.5 mm สะสม',
-          data: [0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(245, 158, 11, 0.85)',
-          borderWidth: 1
-        },
-        {
-          label: 'เฉลี่ย 5 mm สะสม',
-          data: [0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(16, 185, 129, 0.85)',
-          borderWidth: 1
-        }
+        { label: 'เฉลี่ย 25 mm', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(2, 132, 199, 0.85)', borderWidth: 1 },
+        { label: 'เฉลี่ย 12.5 mm สะสม', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(245, 158, 11, 0.85)', borderWidth: 1 },
+        { label: 'เฉลี่ย 5 mm สะสม', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16, 185, 129, 0.85)', borderWidth: 1 }
       ]
     },
     options: {
@@ -1218,33 +1138,13 @@ function initBenchmarkChart() {
         legend: { position: 'top' },
         annotation: {
           annotations: {
-            line1: {
-              type: 'line',
-              yMin: 10,
-              yMax: 10,
-              borderColor: 'red',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
-              label: { display: true, content: '25 mm (10%)', position: 'end', backgroundColor: 'red', color: '#fff', font: { size: 8 } }
-            },
-            line2: {
-              type: 'line',
-              yMin: 30,
-              yMax: 30,
-              borderColor: '#b91c1c',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
-              label: { display: true, content: '12.5 mm (30%)', position: 'start', backgroundColor: '#b91c1c', color: '#fff', font: { size: 8 } }
-            }
+            line1: { type: 'line', yMin: 10, yMax: 10, borderColor: 'red', borderWidth: 1.5, borderDash: [5, 5], label: { display: true, content: '25 mm (10%)', position: 'end', backgroundColor: 'red', color: '#fff', font: { size: 8 } } },
+            line2: { type: 'line', yMin: 30, yMax: 30, borderColor: '#b91c1c', borderWidth: 1.5, borderDash: [5, 5], label: { display: true, content: '12.5 mm (30%)', position: 'start', backgroundColor: '#b91c1c', color: '#fff', font: { size: 8 } } }
           }
         }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          suggestedMax: 100,
-          ticks: { callback: (v) => v + '%' }
-        }
+        y: { beginAtZero: true, suggestedMax: 100, ticks: { callback: (v) => v + '%' } }
       }
     }
   });
@@ -1329,6 +1229,7 @@ function updateDashboardStats(data) {
     document.getElementById('kpiAvg2').innerText = '- %';
     document.getElementById('kpiAvg3').innerText = '- %';
     document.getElementById('kpiAvgFines').innerText = '- %';
+    document.getElementById('kpiAvgIdeal').innerText = '- %';
     document.getElementById('kpiCount').innerText = '0 รายการ';
     return;
   }
@@ -1339,9 +1240,14 @@ function updateDashboardStats(data) {
   const sumFines = data.reduce((acc, cur) => acc + (cur.percentFines || 0), 0);
   const n = data.length;
   
+  const avg2 = sum2 / n;
+  const avg3 = sum3 / n;
+  const avgIdeal = avg3 - avg2;
+  
   document.getElementById('kpiAvg1').innerText = (sum1 / n).toFixed(2) + ' %';
-  document.getElementById('kpiAvg2').innerText = (sum2 / n).toFixed(2) + ' %';
-  document.getElementById('kpiAvg3').innerText = (sum3 / n).toFixed(2) + ' %';
+  document.getElementById('kpiAvg2').innerText = avg2.toFixed(2) + ' %';
+  document.getElementById('kpiAvg3').innerText = avg3.toFixed(2) + ' %';
+  document.getElementById('kpiAvgIdeal').innerText = avgIdeal.toFixed(2) + ' %';
   document.getElementById('kpiAvgFines').innerText = (sumFines / n).toFixed(2) + ' %';
   document.getElementById('kpiCount').innerText = `${n} รายการ`;
 }
