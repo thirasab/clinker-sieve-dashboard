@@ -23,7 +23,6 @@
       --bg-surface: #f8fafc;
     }
 
-    /* Fluid Typography ปรับตามขนาดหน้าจออัตโนมัติ */
     html {
       font-size: clamp(14px, 1.2vw + 10px, 16px);
     }
@@ -293,7 +292,7 @@
         </div>
       </div>
 
-      <!-- Quick KPI Cards -->
+      <!-- Quick KPI Cards (4 Cards) -->
       <div class="row g-2 mb-3">
         <div class="col-6 col-md-3">
           <div class="card p-3 border-start border-primary border-4">
@@ -315,26 +314,13 @@
         </div>
         <div class="col-6 col-md-3">
           <div class="card p-3 border-start border-danger border-4">
-            <div class="text-muted small">เฉลี่ย ฝุ่น &lt; 5 มม. (&le; 15%)</div>
+            <div class="text-muted small">เฉลี่ย ฝุ่น &lt; 5 มม.</div>
             <h4 class="fw-bold mb-0 text-danger" id="kpiAvgFines">- %</h4>
           </div>
         </div>
       </div>
 
-      <!-- กราฟที่ 1: กราฟเส้นการกระจายตัวของขนาดเม็ดปูนเม็ดสะสม (Cumulative Granulometry Curve) -->
-      <div class="card p-3 mb-3 border-2 border-primary border-opacity-25">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="fw-bold mb-0 text-dark">
-            <i class="bi bi-bezier2 me-1 text-primary"></i>กราฟ % ค้างตะแกรงสะสมตามลำดับขนาดอนุภาค (Cumulative Retained S-Curve)
-          </h6>
-          <span class="badge bg-primary text-white" id="granulometrySubTitle">เฉลี่ยตามตัวกรองที่เลือก</span>
-        </div>
-        <div style="height: 330px; position: relative;">
-          <canvas id="granulometryChart"></canvas>
-        </div>
-      </div>
-
-      <!-- กราฟที่ 2: CM Benchmark Bar Chart (3 แท่งเปรียบเทียบ 6 หมอบด) -->
+      <!-- กราฟที่ 1: CM Benchmark Bar Chart (3 แท่งเปรียบเทียบ 6 หมอบด) -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill me-1 text-primary"></i>กราฟแท่งเปรียบเทียบค่าเฉลี่ยรายหมอบด (CM5 vs CM6 vs CM7 vs CM9 vs CM10 vs CM11)</h6>
@@ -345,10 +331,10 @@
         </div>
       </div>
 
-      <!-- กราฟที่ 3: Trend Line Chart ตามช่วงเวลา พร้อมเส้น Spec Limits -->
+      <!-- กราฟที่ 2: Trend Line Chart พร้อมเส้น Spec Limits -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรงตามลำดับเวลา พร้อมเส้นควบคุมมาตรฐาน</h6>
+          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรง พร้อมเส้นควบคุมมาตรฐาน (Upper/Lower Spec)</h6>
           <span class="badge bg-light text-dark border" id="chartSubTitle">แสดงผลทุก CM</span>
         </div>
         <div style="height: 340px; position: relative;">
@@ -602,7 +588,6 @@ let rawData = [];
 let currentLimits = { max1Inch: 10.0, maxHalfInch: 30.0, min5mm: 85.0 };
 let trendChartInstance = null;
 let benchmarkChartInstance = null;
-let granulometryChartInstance = null;
 
 let compressedImages = {
   preview1: null,
@@ -626,7 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filterStartMonth').value = `${past.getFullYear()}-${pastMm}`;
   document.getElementById('filterEndMonth').value = `${yyyy}-${mm}`;
   
-  initGranulometryChart();
   initTrendChart();
   initBenchmarkChart();
   fetchData();
@@ -727,19 +711,6 @@ function updateLimitsUI() {
   document.getElementById('kpiLabel2').innerText = `เฉลี่ย 1/2" สะสม (\u2264 ${currentLimits.maxHalfInch}%)`;
   document.getElementById('kpiLabel3').innerText = `เฉลี่ย 5 มม. สะสม (\u2265 ${currentLimits.min5mm}%)`;
 
-  // อัปเดตกราฟ Granulometry Curve Spec
-  if (granulometryChartInstance) {
-    const finesLimit = Math.max(0, 100 - currentLimits.min5mm);
-    granulometryChartInstance.data.datasets[1].data = [
-      currentLimits.max1Inch, 
-      currentLimits.maxHalfInch, 
-      currentLimits.min5mm, 
-      finesLimit
-    ];
-    granulometryChartInstance.update();
-  }
-
-  // อัปเดตกราฟ Trend Annotations
   if (trendChartInstance && trendChartInstance.options.plugins.annotation) {
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMin = currentLimits.max1Inch;
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMax = currentLimits.max1Inch;
@@ -755,7 +726,6 @@ function updateLimitsUI() {
     trendChartInstance.update();
   }
 
-  // อัปเดตกราฟ Benchmark Annotations
   if (benchmarkChartInstance && benchmarkChartInstance.options.plugins.annotation) {
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMin = currentLimits.max1Inch;
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMax = currentLimits.max1Inch;
@@ -812,12 +782,12 @@ function saveDraft() {
     screen2: document.getElementById('weight2').value,
     screen3: document.getElementById('weight3').value
   };
-  localStorage.setItem('clinker_sieve_draft_v3', JSON.stringify(draft));
+  localStorage.setItem('clinker_sieve_draft_v2', JSON.stringify(draft));
   document.getElementById('draftStatusText').innerText = "บันทึกร่างอัตโนมัติแล้ว";
 }
 
 function restoreDraft() {
-  const saved = localStorage.getItem('clinker_sieve_draft_v3');
+  const saved = localStorage.getItem('clinker_sieve_draft_v2');
   if (saved) {
     try {
       const draft = JSON.parse(saved);
@@ -839,7 +809,7 @@ function restoreDraft() {
 }
 
 function clearDraft() {
-  localStorage.removeItem('clinker_sieve_draft_v3');
+  localStorage.removeItem('clinker_sieve_draft_v2');
   document.getElementById('draftStatusText').innerText = "ระบบ Auto-Draft พร้อมทำงาน";
 }
 
@@ -994,76 +964,8 @@ async function handleImageSelection(input, previewId) {
 }
 
 // ==========================================
-// 5. CHARTS CONFIGURATION (3 กราฟหลัก)
+// 5. CHARTS (TREND & BENCHMARK)
 // ==========================================
-
-// 5.1 กราฟเส้นสะสม Clinker Granulometry Cumulative S-Curve
-function initGranulometryChart() {
-  const ctx = document.getElementById('granulometryChart').getContext('2d');
-  granulometryChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: [
-        '1. > 25 mm (ค้าง 1")', 
-        '2. > 12.5 mm (1/2" สะสม)', 
-        '3. > 5 mm (5mm สะสม)', 
-        '4. < 5 mm (ฝุ่นลอดผ่าน)'
-      ],
-      datasets: [
-        {
-          label: '% ค้างสะสมจริง (Actual Average Curve)',
-          data: [0, 0, 0, 0],
-          borderColor: '#0284c7',
-          backgroundColor: 'rgba(2, 132, 199, 0.15)',
-          pointBackgroundColor: '#0f172a',
-          pointBorderColor: '#0284c7',
-          pointRadius: 6,
-          pointHoverRadius: 8,
-          borderWidth: 3,
-          tension: 0.35,
-          fill: true
-        },
-        {
-          label: 'เกณฑ์ควบคุมมาตรฐาน (Spec Limits)',
-          data: [10.0, 30.0, 85.0, 15.0],
-          borderColor: '#ef4444',
-          borderDash: [6, 6],
-          pointBackgroundColor: '#ef4444',
-          pointBorderColor: '#fff',
-          pointRadius: 5,
-          borderWidth: 2,
-          tension: 0,
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'top', labels: { font: { family: 'Prompt', size: 12 } } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} %`
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-          title: { display: true, text: '% ค้างสะสม / % ฝุ่น', font: { family: 'Prompt', weight: 'bold' } },
-          ticks: { callback: (v) => v + '%' }
-        },
-        x: {
-          title: { display: true, text: 'ลำดับขั้นตอนการร่อนตะแกรงปูนเม็ด', font: { family: 'Prompt', weight: 'bold' } }
-        }
-      }
-    }
-  });
-}
-
-// 5.2 กราฟแนวโน้มตามลำดับเวลา (Trend Chart)
 function initTrendChart() {
   const ctx = document.getElementById('trendChart').getContext('2d');
   trendChartInstance = new Chart(ctx, {
@@ -1171,7 +1073,6 @@ function initTrendChart() {
   });
 }
 
-// 5.3 กราฟแท่งเปรียบเทียบหมอบด (Benchmark Bar Chart)
 function initBenchmarkChart() {
   const ctx = document.getElementById('benchmarkChart').getContext('2d');
   benchmarkChartInstance = new Chart(ctx, {
@@ -1283,7 +1184,6 @@ function applyFilters() {
   
   updateDashboardStats(filtered);
   renderTable(filtered);
-  updateGranulometryChart(filtered);
   updateTrendChart(filtered);
   updateBenchmarkChart(startM, endM);
 }
@@ -1309,36 +1209,6 @@ function updateDashboardStats(data) {
   document.getElementById('kpiAvg3').innerText = (sum3 / n).toFixed(2) + ' %';
   document.getElementById('kpiAvgFines').innerText = (sumFines / n).toFixed(2) + ' %';
   document.getElementById('kpiCount').innerText = `${n} รายการ`;
-}
-
-// อัปเดตกราฟ Cumulative Granulometry Curve ตามตัวกรอง
-function updateGranulometryChart(filtered) {
-  if (!granulometryChartInstance) return;
-  
-  const selectedCm = document.getElementById('filterCm').value;
-  document.getElementById('granulometrySubTitle').innerText = selectedCm === 'all' 
-    ? 'ค่าเฉลี่ยทุก CM' 
-    : `เฉพาะ CM ${selectedCm}`;
-
-  if (!filtered || filtered.length === 0) {
-    granulometryChartInstance.data.datasets[0].data = [0, 0, 0, 0];
-    granulometryChartInstance.update();
-    return;
-  }
-
-  const n = filtered.length;
-  const avg1 = filtered.reduce((a, b) => a + b.percent1, 0) / n;
-  const avg2 = filtered.reduce((a, b) => a + b.percent2, 0) / n;
-  const avg3 = filtered.reduce((a, b) => a + (b.percent3 || 0), 0) / n;
-  const avgFines = filtered.reduce((a, b) => a + (b.percentFines || 0), 0) / n;
-
-  granulometryChartInstance.data.datasets[0].data = [
-    Number(avg1.toFixed(2)),
-    Number(avg2.toFixed(2)),
-    Number(avg3.toFixed(2)),
-    Number(avgFines.toFixed(2))
-  ];
-  granulometryChartInstance.update();
 }
 
 function updateTrendChart(dataset = null) {
