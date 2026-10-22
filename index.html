@@ -181,7 +181,7 @@
   <div class="app-header d-flex flex-wrap justify-content-between align-items-center gap-2">
     <div>
       <h3 class="fw-bold mb-1"><i class="bi bi-pie-chart-fill text-warning me-2"></i>ระบบบันทึกและวิเคราะห์ % ค้างตะแกรงปูนเม็ด</h3>
-      <p class="mb-0 text-slate-300 small">Cement Grinding Plant | CM 5, 6, 7, 9, 10, 11 (1", 1/2", 5 mm)</p>
+      <p class="mb-0 text-slate-300 small">Cement Grinding Plant | CM 5, 6, 7, 9, 10, 11 (25 mm, 12.5 mm, 5 mm)</p>
     </div>
     <div class="d-flex align-items-center gap-2">
       <span id="networkStatusBadge" class="badge bg-success"><i class="bi bi-wifi me-1"></i>ออนไลน์</span>
@@ -198,7 +198,7 @@
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry-view" type="button" role="tab">
-        <i class="bi bi-clipboard2-plus me-1"></i> ป้อนข้อมูลการร่อนตะแกรง (1", 1/2", 5 mm)
+        <i class="bi bi-clipboard2-plus me-1"></i> ป้อนข้อมูลการร่อนตะแกรง (25 mm, 12.5 mm, 5 mm)
       </button>
     </li>
   </ul>
@@ -213,11 +213,11 @@
           <div class="d-flex align-items-center gap-2">
             <span class="fw-bold text-dark"><i class="bi bi-shield-check text-success me-1"></i>เกณฑ์ควบคุมปัจจุบันใน Sheet:</span>
             <div class="limit-badge-box small">
-              <span>1": <b class="text-danger" id="currentLimit1Text">&le; 10.00%</b></span>
+              <span>25 mm: <b class="text-danger" id="currentLimit1Text">&le; 10.00%</b></span>
               <span class="text-muted">|</span>
-              <span>1/2" สะสม: <b class="text-danger" id="currentLimitHalfText">&le; 30.00%</b></span>
+              <span>12.5 mm สะสม: <b class="text-danger" id="currentLimitHalfText">&le; 30.00%</b></span>
               <span class="text-muted">|</span>
-              <span>5 มม. สะสม: <b class="text-success" id="currentLimit5mmText">&ge; 85.00%</b></span>
+              <span>5 mm สะสม: <b class="text-success" id="currentLimit5mmText">&ge; 85.00%</b></span>
             </div>
           </div>
           <div class="d-flex gap-2">
@@ -284,10 +284,10 @@
           <div class="col-6 col-md-3">
             <label class="form-label small fw-bold">แสดงเส้นกราฟ Trend</label>
             <select class="form-select form-select-sm" id="filterMetric" onchange="updateTrendChart()">
-              <option value="all">แสดงทั้งหมด (1", 1/2", 5 mm สะสม)</option>
-              <option value="1inch">เฉพาะ % ค้าง 1 นิ้ว</option>
-              <option value="halfInch">เฉพาะ % ค้าง 1/2 นิ้ว (สะสม)</option>
-              <option value="5mm">เฉพาะ % ค้าง 5 มม. (สะสม)</option>
+              <option value="all">แสดงทั้งหมด (25 mm, 12.5 mm, 5 mm สะสม)</option>
+              <option value="25mm">เฉพาะ % ค้าง 25 mm</option>
+              <option value="12_5mm">เฉพาะ % ค้าง 12.5 mm (สะสม)</option>
+              <option value="5mm">เฉพาะ % ค้าง 5 mm (สะสม)</option>
             </select>
           </div>
         </div>
@@ -297,25 +297,25 @@
       <div class="row g-2 mb-3">
         <div class="col-6 col-md-3">
           <div class="card p-3 border-start border-primary border-4">
-            <div class="text-muted small" id="kpiLabel1">เฉลี่ย % ค้าง 1" (&le; 10%)</div>
+            <div class="text-muted small" id="kpiLabel1">เฉลี่ย % ค้าง 25 mm (&le; 10%)</div>
             <h4 class="fw-bold mb-0 text-primary" id="kpiAvg1">- %</h4>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card p-3 border-start border-warning border-4">
-            <div class="text-muted small" id="kpiLabel2">เฉลี่ย 1/2" สะสม (&le; 30%)</div>
+            <div class="text-muted small" id="kpiLabel2">เฉลี่ย 12.5 mm สะสม (&le; 30%)</div>
             <h4 class="fw-bold mb-0 text-warning" id="kpiAvg2">- %</h4>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card p-3 border-start border-success border-4">
-            <div class="text-muted small" id="kpiLabel3">เฉลี่ย 5 มม. สะสม (&ge; 85%)</div>
+            <div class="text-muted small" id="kpiLabel3">เฉลี่ย 5 mm สะสม (&ge; 85%)</div>
             <h4 class="fw-bold mb-0 text-success" id="kpiAvg3">- %</h4>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card p-3 border-start border-danger border-4">
-            <div class="text-muted small">เฉลี่ย ฝุ่น &lt; 5 มม. (&le; 15%)</div>
+            <div class="text-muted small">เฉลี่ย ฝุ่น &lt; 5 mm (&le; 15%)</div>
             <h4 class="fw-bold mb-0 text-danger" id="kpiAvgFines">- %</h4>
           </div>
         </div>
@@ -338,7 +338,7 @@
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill me-1 text-primary"></i>กราฟแท่งเปรียบเทียบค่าเฉลี่ยรายหมอบด (CM5 vs CM6 vs CM7 vs CM9 vs CM10 vs CM11)</h6>
-          <span class="badge bg-light text-muted border">Benchmark 1", 1/2", 5 mm</span>
+          <span class="badge bg-light text-muted border">Benchmark 25 mm, 12.5 mm, 5 mm</span>
         </div>
         <div style="height: 320px; position: relative;">
           <canvas id="benchmarkChart"></canvas>
@@ -371,17 +371,17 @@
                 <th>กะ</th>
                 <th>CM</th>
                 <th>นน.สุทธิ</th>
-                <th>ค้าง 1" (กก.)</th>
-                <th>% ค้าง 1"</th>
-                <th>ค้าง 1/2" (กก.)</th>
-                <th>% 1/2" (สะสม)</th>
-                <th>ค้าง 5 มม. (กก.)</th>
-                <th>% 5 มม. (สะสม)</th>
-                <th>ฝุ่น &lt;5 มม. (%)</th>
+                <th>ค้าง 25 mm (กก.)</th>
+                <th>% ค้าง 25 mm</th>
+                <th>ค้าง 12.5 mm (กก.)</th>
+                <th>% 12.5 mm (สะสม)</th>
+                <th>ค้าง 5 mm (กก.)</th>
+                <th>% 5 mm (สะสม)</th>
+                <th>ฝุ่น &lt;5 mm (%)</th>
                 <th>ผู้รายงาน</th>
-                <th>รูป 1"</th>
-                <th>รูป 1/2"</th>
-                <th>รูป 5 มม.</th>
+                <th>รูป 25 mm</th>
+                <th>รูป 12.5 mm</th>
+                <th>รูป 5 mm</th>
                 <th>จัดการ (PIN)</th>
               </tr>
             </thead>
@@ -401,7 +401,7 @@
             <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-calculator-fill fs-4 text-primary"></i>
-                <h5 class="fw-bold mb-0">แบบฟอร์มชั่งร่อนปูนเม็ด 3 ชั้น (1", 1/2", 5 mm)</h5>
+                <h5 class="fw-bold mb-0">แบบฟอร์มชั่งร่อนปูนเม็ด 3 ชั้น (25 mm, 12.5 mm, 5 mm)</h5>
               </div>
               <span class="badge bg-light text-muted border small" id="draftStatusText">ระบบ Auto-Draft พร้อมทำงาน</span>
             </div>
@@ -475,12 +475,12 @@
                 </div>
               </div>
 
-              <!-- กรอกค่าน้ำหนักค้าง 3 ตะแกรง (1", 1/2", 5 mm) -->
+              <!-- กรอกค่าน้ำหนักค้าง 3 ตะแกรง (25 mm, 12.5 mm, 5 mm) -->
               <div class="row g-3 mb-3">
-                <!-- ตะแกรง 1 นิ้ว -->
+                <!-- ตะแกรง 25 mm -->
                 <div class="col-md-4">
                   <div class="border rounded p-3 bg-light h-100">
-                    <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>1. ตะแกรง 1 นิ้ว (1") <span class="required-star">*</span></label>
+                    <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>1. ตะแกรง 25 mm <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text small">ชั่งได้</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight1" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
@@ -491,45 +491,45 @@
                       <span class="fw-bold text-primary" id="pct1Display">0.00 %</span>
                     </div>
                     <div>
-                      <label class="form-label small mb-1">รูปถ่าย 1" <span class="required-star">*</span></label>
+                      <label class="form-label small mb-1">รูปถ่าย 25 mm <span class="required-star">*</span></label>
                       <input type="file" class="form-control form-control-sm" id="imgFile1" accept="image/*" required onchange="handleImageSelection(this, 'preview1')">
                       <div class="img-preview-box mt-2" id="preview1"><span class="small text-danger">ยังไม่แนบรูป</span></div>
                     </div>
                   </div>
                 </div>
 
-                <!-- ตะแกรง 1/2 นิ้ว -->
+                <!-- ตะแกรง 12.5 mm -->
                 <div class="col-md-4">
                   <div class="border rounded p-3 bg-light h-100">
-                    <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>2. ตะแกรง 1/2 นิ้ว (1/2") <span class="required-star">*</span></label>
+                    <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>2. ตะแกรง 12.5 mm <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text small">ชั่งได้</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight2" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
                       <span class="input-group-text small">กก.</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="small text-muted">% สะสม (รวม 1"):</span>
+                      <span class="small text-muted">% สะสม (รวม 25 mm):</span>
                       <span class="fw-bold text-warning" id="pct2Display">0.00 %</span>
                     </div>
                     <div>
-                      <label class="form-label small mb-1">รูปถ่าย 1/2" <span class="required-star">*</span></label>
+                      <label class="form-label small mb-1">รูปถ่าย 12.5 mm <span class="required-star">*</span></label>
                       <input type="file" class="form-control form-control-sm" id="imgFile2" accept="image/*" required onchange="handleImageSelection(this, 'preview2')">
                       <div class="img-preview-box mt-2" id="preview2"><span class="small text-danger">ยังไม่แนบรูป</span></div>
                     </div>
                   </div>
                 </div>
 
-                <!-- ตะแกรง 5 มม. -->
+                <!-- ตะแกรง 5 mm -->
                 <div class="col-md-4">
                   <div class="border rounded p-3 bg-light h-100">
-                    <label class="form-label fw-bold text-success"><i class="bi bi-box-seam me-1"></i>3. ตะแกรง 5 มม. (5 mm) <span class="required-star">*</span></label>
+                    <label class="form-label fw-bold text-success"><i class="bi bi-box-seam me-1"></i>3. ตะแกรง 5 mm <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
                       <span class="input-group-text small">ชั่งได้</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight3" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
                       <span class="input-group-text small">กก.</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="small text-muted">% สะสม (รวม 1"+1/2"):</span>
+                      <span class="small text-muted">% สะสม (รวม 25+12.5):</span>
                       <span class="fw-bold text-success" id="pct3Display">0.00 %</span>
                     </div>
                     <div>
@@ -549,19 +549,19 @@
                 </div>
                 <div class="row g-2 text-center small">
                   <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 1" (ก้อนใหญ่)</span>
+                    <span class="text-muted d-block">ค้าง 25 mm (ก้อนใหญ่)</span>
                     <b id="sumPct1Text" class="text-primary">-</b>
                   </div>
                   <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 1/2" สะสม (ก้อนหยาบ)</span>
+                    <span class="text-muted d-block">ค้าง 12.5 mm สะสม (ก้อนหยาบ)</span>
                     <b id="sumPct2Text" class="text-warning">-</b>
                   </div>
                   <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 5 มม. สะสม (รวม)</span>
+                    <span class="text-muted d-block">ค้าง 5 mm สะสม (รวม)</span>
                     <b id="sumPct3Text" class="text-success">-</b>
                   </div>
                   <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ฝุ่นปูนเม็ด (&lt; 5 มม.)</span>
+                    <span class="text-muted d-block">ฝุ่นปูนเม็ด (&lt; 5 mm)</span>
                     <b id="sumPctFinesText" class="text-danger">-</b>
                   </div>
                 </div>
@@ -599,7 +599,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzeId8QcFaYtW9dswefQ3hz
 const SUPERVISOR_PIN = "1234";
 
 let rawData = [];
-let currentLimits = { max1Inch: 10.0, maxHalfInch: 30.0, min5mm: 85.0 };
+let currentLimits = { max25mm: 10.0, max12_5mm: 30.0, min5mm: 85.0, max1Inch: 10.0, maxHalfInch: 30.0 };
 let trendChartInstance = null;
 let benchmarkChartInstance = null;
 let granulometryChartInstance = null;
@@ -630,7 +630,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTrendChart();
   initBenchmarkChart();
   
-  // เรียกโหลดข้อมูลแบบมี Instant Cache
   fetchData();
   restoreDraft();
   setupNetworkMonitoring();
@@ -650,23 +649,27 @@ function setupNetworkMonitoring() {
 }
 
 // ==========================================
-// 2. MODAL & API FOR CONTROL LIMITS
+// 2. MODAL & API FOR CONTROL LIMITS (mm)
 // ==========================================
 function openLimitSettingsModal() {
+  const val25 = currentLimits.max25mm || currentLimits.max1Inch || 10.0;
+  const val12_5 = currentLimits.max12_5mm || currentLimits.maxHalfInch || 30.0;
+  const val5 = currentLimits.min5mm || 85.0;
+
   Swal.fire({
     title: 'ตั้งค่าเกณฑ์ควบคุม (Control Limits)',
     html: `
       <div class="text-start mb-2">
-        <label class="form-label small fw-bold">เกณฑ์สูงสุด ตะแกรง 1 นิ้ว (%):</label>
-        <input type="number" step="0.1" id="swalLimit1" class="form-control" value="${currentLimits.max1Inch}">
+        <label class="form-label small fw-bold">เกณฑ์สูงสุด ตะแกรง 25 mm (%):</label>
+        <input type="number" step="0.1" id="swalLimit25" class="form-control" value="${val25}">
       </div>
       <div class="text-start mb-2">
-        <label class="form-label small fw-bold">เกณฑ์สูงสุด ตะแกรง 1/2 นิ้ว สะสม (%):</label>
-        <input type="number" step="0.1" id="swalLimitHalf" class="form-control" value="${currentLimits.maxHalfInch}">
+        <label class="form-label small fw-bold">เกณฑ์สูงสุด ตะแกรง 12.5 mm สะสม (%):</label>
+        <input type="number" step="0.1" id="swalLimit12_5" class="form-control" value="${val12_5}">
       </div>
       <div class="text-start mb-3">
-        <label class="form-label small fw-bold">เกณฑ์ขั้นต่ำ ตะแกรง 5 มม. สะสม (%):</label>
-        <input type="number" step="0.1" id="swalLimit5mm" class="form-control" value="${currentLimits.min5mm}">
+        <label class="form-label small fw-bold">เกณฑ์ขั้นต่ำ ตะแกรง 5 mm สะสม (%):</label>
+        <input type="number" step="0.1" id="swalLimit5" class="form-control" value="${val5}">
       </div>
       <div class="text-start">
         <label class="form-label small fw-bold text-danger">ยืนยัน Supervisor PIN (4 หลัก):</label>
@@ -677,12 +680,12 @@ function openLimitSettingsModal() {
     confirmButtonText: 'บันทึกเกณฑ์ลง Sheet',
     cancelButtonText: 'ยกเลิก',
     preConfirm: () => {
-      const l1 = parseFloat(document.getElementById('swalLimit1').value);
-      const lHalf = parseFloat(document.getElementById('swalLimitHalf').value);
-      const l5 = parseFloat(document.getElementById('swalLimit5mm').value);
+      const l25 = parseFloat(document.getElementById('swalLimit25').value);
+      const l12_5 = parseFloat(document.getElementById('swalLimit12_5').value);
+      const l5 = parseFloat(document.getElementById('swalLimit5').value);
       const pin = document.getElementById('swalPin').value;
 
-      if (isNaN(l1) || l1 <= 0 || isNaN(lHalf) || lHalf <= 0 || isNaN(l5) || l5 <= 0) {
+      if (isNaN(l25) || l25 <= 0 || isNaN(l12_5) || l12_5 <= 0 || isNaN(l5) || l5 <= 0) {
         Swal.showValidationMessage('กรุณากรอกตัวเลขเกณฑ์ควบคุมให้ถูกต้อง');
         return false;
       }
@@ -690,7 +693,7 @@ function openLimitSettingsModal() {
         Swal.showValidationMessage('รหัส Supervisor PIN ไม่ถูกต้อง!');
         return false;
       }
-      return { max1Inch: l1, maxHalfInch: lHalf, min5mm: l5 };
+      return { max25mm: l25, max12_5mm: l12_5, min5mm: l5, max1Inch: l25, maxHalfInch: l12_5 };
     }
   }).then(async (result) => {
     if (result.isConfirmed) {
@@ -722,51 +725,50 @@ async function saveLimitsToBackend(limits) {
 }
 
 function updateLimitsUI() {
-  document.getElementById('currentLimit1Text').innerText = `\u2264 ${currentLimits.max1Inch.toFixed(2)}%`;
-  document.getElementById('currentLimitHalfText').innerText = `\u2264 ${currentLimits.maxHalfInch.toFixed(2)}%`;
-  document.getElementById('currentLimit5mmText').innerText = `\u2265 ${currentLimits.min5mm.toFixed(2)}%`;
-  
-  document.getElementById('kpiLabel1').innerText = `เฉลี่ย % ค้าง 1" (\u2264 ${currentLimits.max1Inch}%)`;
-  document.getElementById('kpiLabel2').innerText = `เฉลี่ย 1/2" สะสม (\u2264 ${currentLimits.maxHalfInch}%)`;
-  document.getElementById('kpiLabel3').innerText = `เฉลี่ย 5 มม. สะสม (\u2265 ${currentLimits.min5mm}%)`;
+  const val25 = currentLimits.max25mm || currentLimits.max1Inch || 10.0;
+  const val12_5 = currentLimits.max12_5mm || currentLimits.maxHalfInch || 30.0;
+  const val5 = currentLimits.min5mm || 85.0;
 
-  // อัปเดตกราฟ Granulometry Curve Spec
+  document.getElementById('currentLimit1Text').innerText = `\u2264 ${val25.toFixed(2)}%`;
+  document.getElementById('currentLimitHalfText').innerText = `\u2264 ${val12_5.toFixed(2)}%`;
+  document.getElementById('currentLimit5mmText').innerText = `\u2265 ${val5.toFixed(2)}%`;
+  
+  document.getElementById('kpiLabel1').innerText = `เฉลี่ย % ค้าง 25 mm (\u2264 ${val25}%)`;
+  document.getElementById('kpiLabel2').innerText = `เฉลี่ย 12.5 mm สะสม (\u2264 ${val12_5}%)`;
+  document.getElementById('kpiLabel3').innerText = `เฉลี่ย 5 mm สะสม (\u2265 ${val5}%)`;
+
+  // อัปเดตกราฟ Granulometry S-Curve Spec
   if (granulometryChartInstance) {
-    const finesLimit = Math.max(0, 100 - currentLimits.min5mm);
-    granulometryChartInstance.data.datasets[1].data = [
-      currentLimits.max1Inch, 
-      currentLimits.maxHalfInch, 
-      currentLimits.min5mm, 
-      finesLimit
-    ];
+    const finesLimit = Math.max(0, 100 - val5);
+    granulometryChartInstance.data.datasets[1].data = [val25, val12_5, val5, finesLimit];
     granulometryChartInstance.update();
   }
 
   // อัปเดตกราฟ Trend Annotations
   if (trendChartInstance && trendChartInstance.options.plugins.annotation) {
-    trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMin = currentLimits.max1Inch;
-    trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMax = currentLimits.max1Inch;
-    trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.label.content = `Upper Spec 1" (${currentLimits.max1Inch}%)`;
+    trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMin = val25;
+    trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMax = val25;
+    trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.label.content = `Upper Spec 25 mm (${val25}%)`;
 
-    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.yMin = currentLimits.maxHalfInch;
-    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.yMax = currentLimits.maxHalfInch;
-    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.label.content = `Upper Spec 1/2" (${currentLimits.maxHalfInch}%)`;
+    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.yMin = val12_5;
+    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.yMax = val12_5;
+    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.label.content = `Upper Spec 12.5 mm (${val12_5}%)`;
 
-    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.yMin = currentLimits.min5mm;
-    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.yMax = currentLimits.min5mm;
-    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.label.content = `Lower Spec 5mm (${currentLimits.min5mm}%)`;
+    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.yMin = val5;
+    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.yMax = val5;
+    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.label.content = `Lower Spec 5 mm (${val5}%)`;
     trendChartInstance.update();
   }
 
   // อัปเดตกราฟ Benchmark Annotations
   if (benchmarkChartInstance && benchmarkChartInstance.options.plugins.annotation) {
-    benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMin = currentLimits.max1Inch;
-    benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMax = currentLimits.max1Inch;
-    benchmarkChartInstance.options.plugins.annotation.annotations.line1.label.content = `1" (${currentLimits.max1Inch}%)`;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMin = val25;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMax = val25;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line1.label.content = `25 mm (${val25}%)`;
 
-    benchmarkChartInstance.options.plugins.annotation.annotations.line2.yMin = currentLimits.maxHalfInch;
-    benchmarkChartInstance.options.plugins.annotation.annotations.line2.yMax = currentLimits.maxHalfInch;
-    benchmarkChartInstance.options.plugins.annotation.annotations.line2.label.content = `1/2" (${currentLimits.maxHalfInch}%)`;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line2.yMin = val12_5;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line2.yMax = val12_5;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line2.label.content = `12.5 mm (${val12_5}%)`;
     benchmarkChartInstance.update();
   }
 
@@ -782,7 +784,7 @@ function renderStandardsTable(standards) {
 
   tbody.innerHTML = '';
   standards.forEach((item) => {
-    const isOptimal = item.fraction.includes('5 - 12.5') || item.fraction.includes('5 มม.');
+    const isOptimal = item.fraction.includes('5 mm') || item.fraction.includes('Ideal');
     const isCoarse = item.fraction.includes('> 25');
     
     let badgeClass = 'bg-secondary';
@@ -880,7 +882,7 @@ async function processOfflineQueue() {
 }
 
 // ==========================================
-// 4. CALCULATION & REAL-TIME SPEC CHECK
+// 4. CALCULATION & REAL-TIME SPEC CHECK (mm)
 // ==========================================
 function calculatePercent() {
   const gross = parseFloat(document.getElementById('grossWeight').value) || 0;
@@ -892,16 +894,27 @@ function calculatePercent() {
   const w2 = parseFloat(document.getElementById('weight2').value) || 0;
   const w3 = parseFloat(document.getElementById('weight3').value) || 0;
   
+  // 1. % ค้าง 25 mm
   const pct1 = (w1 / net) * 100;
+  
+  // 2. % ค้าง 12.5 mm สะสม
   const w2Cum = w1 + w2;
   const pct2 = (w2Cum / net) * 100;
+  
+  // 3. % ค้าง 5 mm สะสม
   const w3Cum = w1 + w2 + w3;
   const pct3 = (w3Cum / net) * 100;
+  
+  // 4. % ฝุ่น < 5 mm
   const pctFines = Math.max(0, 100 - pct3);
   
-  const isOut1 = pct1 > currentLimits.max1Inch;
-  const isOut2 = pct2 > currentLimits.maxHalfInch;
-  const isOut3 = pct3 < currentLimits.min5mm;
+  const val25 = currentLimits.max25mm || currentLimits.max1Inch || 10.0;
+  const val12_5 = currentLimits.max12_5mm || currentLimits.maxHalfInch || 30.0;
+  const val5 = currentLimits.min5mm || 85.0;
+
+  const isOut1 = pct1 > val25;
+  const isOut2 = pct2 > val12_5;
+  const isOut3 = pct3 < val5;
   const isOutOfSpec = isOut1 || isOut2 || isOut3;
 
   document.getElementById('pct1Display').innerHTML = `${pct1.toFixed(2)} % ${isOut1 ? '<span class="badge bg-danger fs-6 ms-1">เกิน</span>' : ''}`;
@@ -919,11 +932,11 @@ function calculatePercent() {
   if (isOutOfSpec) {
     alertBox.className = "alert alert-danger border p-3 mb-4";
     totalDisplay.className = "fs-5 fw-bold text-danger";
-    totalDisplay.innerHTML = `<span class="badge bg-danger fs-6 me-1">🚨 ผิดเกณฑ์</span> ค้าง 5mm สะสม: ${pct3.toFixed(2)}% (ฝุ่น: ${pctFines.toFixed(2)}%)`;
+    totalDisplay.innerHTML = `<span class="badge bg-danger fs-6 me-1">🚨 ผิดเกณฑ์</span> ค้าง 5 mm สะสม: ${pct3.toFixed(2)}% (ฝุ่น: ${pctFines.toFixed(2)}%)`;
   } else {
     alertBox.className = "alert alert-success border p-3 mb-4";
     totalDisplay.className = "fs-5 fw-bold text-success";
-    totalDisplay.innerHTML = `<span class="badge bg-success fs-6 me-1">✅ ปกติ</span> ค้าง 5mm สะสม: ${pct3.toFixed(2)}% (ฝุ่น: ${pctFines.toFixed(2)}%)`;
+    totalDisplay.innerHTML = `<span class="badge bg-success fs-6 me-1">✅ ปกติ</span> ค้าง 5 mm สะสม: ${pct3.toFixed(2)}% (ฝุ่น: ${pctFines.toFixed(2)}%)`;
   }
 }
 
@@ -990,7 +1003,7 @@ async function handleImageSelection(input, previewId) {
 }
 
 // ==========================================
-// 5. CHARTS CONFIGURATION (ปิด Animation เพื่อความเร็วสูงสุด)
+// 5. CHARTS CONFIGURATION (หน่วย mm)
 // ==========================================
 
 // 5.1 กราฟ S-Curve ค้างสะสม
@@ -1000,9 +1013,9 @@ function initGranulometryChart() {
     type: 'line',
     data: {
       labels: [
-        '1. > 25 mm (ค้าง 1")', 
-        '2. > 12.5 mm (1/2" สะสม)', 
-        '3. > 5 mm (5mm สะสม)', 
+        '1. > 25 mm', 
+        '2. > 12.5 mm (สะสม)', 
+        '3. > 5 mm (สะสม)', 
         '4. < 5 mm (ฝุ่นลอดผ่าน)'
       ],
       datasets: [
@@ -1034,7 +1047,7 @@ function initGranulometryChart() {
       ]
     },
     options: {
-      animation: false, // เรนเดอร์ทันที
+      animation: false,
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -1053,7 +1066,7 @@ function initGranulometryChart() {
           ticks: { callback: (v) => v + '%' }
         },
         x: {
-          title: { display: true, text: 'ลำดับขั้นตอนการร่อนตะแกรงปูนเม็ด', font: { family: 'Prompt', weight: 'bold' } }
+          title: { display: true, text: 'ลำดับขั้นตอนการร่อนตะแกรงปูนเม็ด (mm)', font: { family: 'Prompt', weight: 'bold' } }
         }
       }
     }
@@ -1069,7 +1082,7 @@ function initTrendChart() {
       labels: [],
       datasets: [
         {
-          label: '% ค้าง 1 นิ้ว',
+          label: '% ค้าง 25 mm',
           data: [],
           borderColor: '#0284c7',
           backgroundColor: 'rgba(2, 132, 199, 0.1)',
@@ -1078,7 +1091,7 @@ function initTrendChart() {
           fill: false
         },
         {
-          label: '% ค้าง 1/2 นิ้ว (สะสม)',
+          label: '% ค้าง 12.5 mm (สะสม)',
           data: [],
           borderColor: '#f59e0b',
           backgroundColor: 'rgba(245, 158, 11, 0.1)',
@@ -1087,7 +1100,7 @@ function initTrendChart() {
           fill: false
         },
         {
-          label: '% ค้าง 5 มม. (สะสม)',
+          label: '% ค้าง 5 mm (สะสม)',
           data: [],
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -1098,7 +1111,7 @@ function initTrendChart() {
       ]
     },
     options: {
-      animation: false, // เรนเดอร์ทันที
+      animation: false,
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -1114,7 +1127,7 @@ function initTrendChart() {
               borderDash: [5, 5],
               label: {
                 display: true,
-                content: 'Upper Spec 1" (10%)',
+                content: 'Upper Spec 25 mm (10%)',
                 position: 'end',
                 backgroundColor: 'rgba(239, 68, 68, 0.8)',
                 color: '#fff',
@@ -1130,7 +1143,7 @@ function initTrendChart() {
               borderDash: [5, 5],
               label: {
                 display: true,
-                content: 'Upper Spec 1/2" (30%)',
+                content: 'Upper Spec 12.5 mm (30%)',
                 position: 'start',
                 backgroundColor: 'rgba(185, 28, 28, 0.8)',
                 color: '#fff',
@@ -1146,7 +1159,7 @@ function initTrendChart() {
               borderDash: [5, 5],
               label: {
                 display: true,
-                content: 'Lower Spec 5mm (85%)',
+                content: 'Lower Spec 5 mm (85%)',
                 position: 'center',
                 backgroundColor: 'rgba(5, 150, 105, 0.8)',
                 color: '#fff',
@@ -1178,19 +1191,19 @@ function initBenchmarkChart() {
       labels: ['CM 5', 'CM 6', 'CM 7', 'CM 9', 'CM 10', 'CM 11'],
       datasets: [
         {
-          label: 'เฉลี่ย 1 นิ้ว',
+          label: 'เฉลี่ย 25 mm',
           data: [0, 0, 0, 0, 0, 0],
           backgroundColor: 'rgba(2, 132, 199, 0.85)',
           borderWidth: 1
         },
         {
-          label: 'เฉลี่ย 1/2 นิ้ว สะสม',
+          label: 'เฉลี่ย 12.5 mm สะสม',
           data: [0, 0, 0, 0, 0, 0],
           backgroundColor: 'rgba(245, 158, 11, 0.85)',
           borderWidth: 1
         },
         {
-          label: 'เฉลี่ย 5 มม. สะสม',
+          label: 'เฉลี่ย 5 mm สะสม',
           data: [0, 0, 0, 0, 0, 0],
           backgroundColor: 'rgba(16, 185, 129, 0.85)',
           borderWidth: 1
@@ -1198,7 +1211,7 @@ function initBenchmarkChart() {
       ]
     },
     options: {
-      animation: false, // เรนเดอร์ทันที
+      animation: false,
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -1212,7 +1225,7 @@ function initBenchmarkChart() {
               borderColor: 'red',
               borderWidth: 1.5,
               borderDash: [5, 5],
-              label: { display: true, content: '1" (10%)', position: 'end', backgroundColor: 'red', color: '#fff', font: { size: 8 } }
+              label: { display: true, content: '25 mm (10%)', position: 'end', backgroundColor: 'red', color: '#fff', font: { size: 8 } }
             },
             line2: {
               type: 'line',
@@ -1221,7 +1234,7 @@ function initBenchmarkChart() {
               borderColor: '#b91c1c',
               borderWidth: 1.5,
               borderDash: [5, 5],
-              label: { display: true, content: '1/2" (30%)', position: 'start', backgroundColor: '#b91c1c', color: '#fff', font: { size: 8 } }
+              label: { display: true, content: '12.5 mm (30%)', position: 'start', backgroundColor: '#b91c1c', color: '#fff', font: { size: 8 } }
             }
           }
         }
@@ -1238,10 +1251,9 @@ function initBenchmarkChart() {
 }
 
 // ==========================================
-// 6. INSTANT DATA FETCHING & FILTERING (Stale-While-Revalidate)
+// 6. DATA FETCHING & FILTERING
 // ==========================================
 async function fetchData(forceRefresh = false) {
-  // 1. ดึงแคชเดิมในเครื่องมาพล็อตกราฟทันที (< 0.1 วินาที)
   const cachedData = localStorage.getItem('clinker_sieve_cache');
   const cachedLimits = localStorage.getItem('clinker_limits_cache');
   const cachedStandards = localStorage.getItem('clinker_standards_cache');
@@ -1252,16 +1264,14 @@ async function fetchData(forceRefresh = false) {
       if (cachedLimits) currentLimits = JSON.parse(cachedLimits);
       if (cachedStandards) renderStandardsTable(JSON.parse(cachedStandards));
       updateLimitsUI();
-      applyFilters(); // กราฟและตารางจะขึ้นทันที
+      applyFilters();
     } catch (e) {
       console.warn("Parse cache error", e);
     }
   } else {
-    // ถ้าไม่มีแคช หรือผู้ใช้กดปุ่มรีเฟรช ให้แสดงหน้าจอหมุนรอ
     Swal.fire({ title: 'กำลังโหลดข้อมูลจากชีต...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
   }
 
-  // 2. ดึงข้อมูลใหม่จาก Google Sheets มาอัปเดตเบื้องหลัง
   try {
     const res = await fetch(`${API_URL}?action=getData`);
     const json = await res.json();
@@ -1271,7 +1281,6 @@ async function fetchData(forceRefresh = false) {
       rawData = json.data;
       if (json.limits) currentLimits = json.limits;
       
-      // บันทึกลงแคชเพื่อใช้เปิดไวในรอบหน้า
       localStorage.setItem('clinker_sieve_cache', JSON.stringify(rawData));
       localStorage.setItem('clinker_limits_cache', JSON.stringify(currentLimits));
       if (json.standards) {
@@ -1280,7 +1289,7 @@ async function fetchData(forceRefresh = false) {
       }
 
       updateLimitsUI();
-      applyFilters(); // อัปเดตข้อมูลจริงล่าสุด
+      applyFilters();
     } else {
       if (!cachedData) Swal.fire('เกิดข้อผิดพลาด', json.message, 'error');
     }
@@ -1380,9 +1389,9 @@ function updateTrendChart(dataset = null) {
   trendChartInstance.data.datasets[1].data = sorted.map(d => d.percent2);
   trendChartInstance.data.datasets[2].data = sorted.map(d => d.percent3 || 0);
   
-  trendChartInstance.data.datasets[0].hidden = (metric === 'halfInch' || metric === '5mm');
-  trendChartInstance.data.datasets[1].hidden = (metric === '1inch' || metric === '5mm');
-  trendChartInstance.data.datasets[2].hidden = (metric === '1inch' || metric === 'halfInch');
+  trendChartInstance.data.datasets[0].hidden = (metric === '12_5mm' || metric === '5mm');
+  trendChartInstance.data.datasets[1].hidden = (metric === '25mm' || metric === '5mm');
+  trendChartInstance.data.datasets[2].hidden = (metric === '25mm' || metric === '12_5mm');
   
   trendChartInstance.update();
 }
@@ -1448,11 +1457,15 @@ function renderTable(data) {
     tbody.innerHTML = `<tr><td colspan="17" class="py-4 text-muted">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
     return;
   }
+
+  const val25 = currentLimits.max25mm || currentLimits.max1Inch || 10.0;
+  const val12_5 = currentLimits.max12_5mm || currentLimits.maxHalfInch || 30.0;
+  const val5 = currentLimits.min5mm || 85.0;
   
   data.forEach(row => {
-    const isOut1 = row.percent1 > currentLimits.max1Inch;
-    const isOut2 = row.percent2 > currentLimits.maxHalfInch;
-    const isOut3 = (row.percent3 || 0) < currentLimits.min5mm;
+    const isOut1 = row.percent1 > val25;
+    const isOut2 = row.percent2 > val12_5;
+    const isOut3 = (row.percent3 || 0) < val5;
     
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -1492,15 +1505,15 @@ async function submitForm(e) {
   e.preventDefault();
   
   if (!compressedImages.preview1) {
-    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1 นิ้ว ก่อนบันทึก', 'warning');
+    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 25 mm ก่อนบันทึก', 'warning');
     return;
   }
   if (!compressedImages.preview2) {
-    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1/2 นิ้ว ก่อนบันทึก', 'warning');
+    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 12.5 mm ก่อนบันทึก', 'warning');
     return;
   }
   if (!compressedImages.preview3) {
-    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 5 มม. ก่อนบันทึก', 'warning');
+    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 5 mm ก่อนบันทึก', 'warning');
     return;
   }
 
@@ -1555,7 +1568,7 @@ async function submitForm(e) {
       resetForm();
       clearDraft();
       bootstrap.Tab.getInstance(document.getElementById('dashboard-tab')).show();
-      fetchData(true); // โหลดสดเพื่อนำข้อมูลใหม่ล่าสุดมาลงแคชทันที
+      fetchData(true);
     } else {
       Swal.fire('ข้อผิดพลาด', json.message, 'error');
     }
