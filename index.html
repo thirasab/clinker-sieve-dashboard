@@ -23,6 +23,7 @@
       --bg-surface: #f8fafc;
     }
 
+    /* 1. ขนาดตัวอักษรพื้นฐาน ย่อ-ขยายอัตโนมัติตามสัดส่วนหน้าจอ */
     html {
       font-size: clamp(14px, 1.2vw + 10px, 16px);
     }
@@ -34,6 +35,7 @@
       -webkit-text-size-adjust: 100%;
     }
 
+    /* 2. หัวข้อแบนเนอร์ด้านบน (Header Title) */
     .app-header {
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
       color: white;
@@ -68,12 +70,14 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
 
+    /* 3. ตัวเลขสถิติและ KPI */
     .card h4 {
-      font-size: clamp(1.2rem, 2.8vw, 1.65rem);
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
     }
 
+    /* 4. กล่องสรุปผล % ค้างในฟอร์มป้อนข้อมูล */
     #totalPctDisplay {
-      font-size: clamp(1.25rem, 3.2vw, 1.75rem) !important;
+      font-size: clamp(1.3rem, 3.5vw, 1.85rem) !important;
     }
 
     .calc-box {
@@ -96,7 +100,7 @@
 
     .img-preview-box {
       width: 100%;
-      height: 130px;
+      height: 140px;
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
       display: flex;
@@ -133,6 +137,7 @@
       align-items: center;
     }
 
+    /* 5. ปรับแต่งสำหรับหน้าจอมือถือ (กว้างไม่เกิน 768px) */
     @media (max-width: 767.98px) {
       .container-fluid {
         padding-left: 0.5rem !important;
@@ -163,12 +168,13 @@
       }
     }
 
+    /* 6. ปรับแต่งสำหรับหน้าจอคอมพิวเตอร์และแท็บเล็ตแนวนอน (กว้างตั้งแต่ 992px ขึ้นไป) */
     @media (min-width: 992px) {
       .table {
-        font-size: 0.85rem;
+        font-size: 0.88rem;
       }
       .table thead th {
-        font-size: 0.88rem;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -180,7 +186,7 @@
   <div class="app-header d-flex flex-wrap justify-content-between align-items-center gap-2">
     <div>
       <h3 class="fw-bold mb-1"><i class="bi bi-pie-chart-fill text-warning me-2"></i>ระบบบันทึกและวิเคราะห์ % ค้างตะแกรงปูนเม็ด</h3>
-      <p class="mb-0 text-slate-300 small">Cement Grinding Plant | CM 5, 6, 7, 9, 10, 11 (1", 1/2", 5 mm)</p>
+      <p class="mb-0 text-slate-300 small">Cement Grinding Plant | CM 5, 6, 7, 9, 10, 11</p>
     </div>
     <div class="d-flex align-items-center gap-2">
       <span id="networkStatusBadge" class="badge bg-success"><i class="bi bi-wifi me-1"></i>ออนไลน์</span>
@@ -197,7 +203,7 @@
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry-view" type="button" role="tab">
-        <i class="bi bi-clipboard2-plus me-1"></i> ป้อนข้อมูลการร่อนตะแกรง (1", 1/2", 5 mm)
+        <i class="bi bi-clipboard2-plus me-1"></i> ป้อนข้อมูลการร่อนตะแกรง
       </button>
     </li>
   </ul>
@@ -212,16 +218,14 @@
           <div class="d-flex align-items-center gap-2">
             <span class="fw-bold text-dark"><i class="bi bi-shield-check text-success me-1"></i>เกณฑ์ควบคุมปัจจุบันใน Sheet:</span>
             <div class="limit-badge-box small">
-              <span>1": <b class="text-danger" id="currentLimit1Text">&le; 10.00%</b></span>
+              <span>ตะแกรง 1": <b class="text-danger" id="currentLimit1Text">&le; 10.00%</b></span>
               <span class="text-muted">|</span>
-              <span>1/2" สะสม: <b class="text-danger" id="currentLimitHalfText">&le; 30.00%</b></span>
-              <span class="text-muted">|</span>
-              <span>5 มม. สะสม: <b class="text-success" id="currentLimit5mmText">&ge; 85.00%</b></span>
+              <span>ตะแกรง 1/2" สะสม: <b class="text-danger" id="currentLimitHalfText">&le; 30.00%</b></span>
             </div>
           </div>
           <div class="d-flex gap-2">
             <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#standardsCollapse">
-              <i class="bi bi-book me-1"></i> มาตรฐาน Clinker Granulometry
+              <i class="bi bi-book me-1"></i> มาตรฐานสากล Clinker Granulometry
             </button>
             <button class="btn btn-sm btn-primary" onclick="openLimitSettingsModal()">
               <i class="bi bi-sliders me-1"></i> ตั้งค่าเกณฑ์ควบคุม
@@ -243,10 +247,10 @@
             <table class="table table-sm table-bordered table-standards align-middle mb-0">
               <thead>
                 <tr class="text-center">
-                  <th style="width: 24%;">ช่วงขนาดเม็ด (Fraction)</th>
+                  <th style="width: 22%;">ช่วงขนาดเม็ด (Fraction)</th>
                   <th style="width: 20%;">เกณฑ์สากล (World Standard)</th>
                   <th style="width: 18%;">เป้าหมาย CM 5-11</th>
-                  <th style="width: 38%;">ผลกระทบต่อระบบบด (Mill Impact)</th>
+                  <th style="width: 40%;">ผลกระทบต่อระบบบด (Mill Impact)</th>
                 </tr>
               </thead>
               <tbody id="standardsTableBody">
@@ -283,50 +287,43 @@
           <div class="col-6 col-md-3">
             <label class="form-label small fw-bold">แสดงเส้นกราฟ Trend</label>
             <select class="form-select form-select-sm" id="filterMetric" onchange="updateTrendChart()">
-              <option value="all">แสดงทั้งหมด (1", 1/2", 5 mm สะสม)</option>
+              <option value="all">แสดงทั้งหมด (% ค้าง 1", 1/2" สะสม)</option>
               <option value="1inch">เฉพาะ % ค้าง 1 นิ้ว</option>
               <option value="halfInch">เฉพาะ % ค้าง 1/2 นิ้ว (สะสม)</option>
-              <option value="5mm">เฉพาะ % ค้าง 5 มม. (สะสม)</option>
             </select>
           </div>
         </div>
       </div>
 
-      <!-- Quick KPI Cards (4 Cards) -->
+      <!-- Quick KPI Cards -->
       <div class="row g-2 mb-3">
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
           <div class="card p-3 border-start border-primary border-4">
-            <div class="text-muted small" id="kpiLabel1">เฉลี่ย % ค้าง 1" (&le; 10%)</div>
+            <div class="text-muted small" id="kpiLabel1">เฉลี่ย % ค้าง 1" (เกณฑ์ &le; 10%)</div>
             <h4 class="fw-bold mb-0 text-primary" id="kpiAvg1">- %</h4>
           </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4">
           <div class="card p-3 border-start border-warning border-4">
-            <div class="text-muted small" id="kpiLabel2">เฉลี่ย 1/2" สะสม (&le; 30%)</div>
+            <div class="text-muted small" id="kpiLabel2">เฉลี่ย % ค้าง 1/2" สะสม (เกณฑ์ &le; 30%)</div>
             <h4 class="fw-bold mb-0 text-warning" id="kpiAvg2">- %</h4>
           </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-md-4">
           <div class="card p-3 border-start border-success border-4">
-            <div class="text-muted small" id="kpiLabel3">เฉลี่ย 5 มม. สะสม (&ge; 85%)</div>
-            <h4 class="fw-bold mb-0 text-success" id="kpiAvg3">- %</h4>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="card p-3 border-start border-danger border-4">
-            <div class="text-muted small">เฉลี่ย ฝุ่น &lt; 5 มม.</div>
-            <h4 class="fw-bold mb-0 text-danger" id="kpiAvgFines">- %</h4>
+            <div class="text-muted small">จำนวนตัวอย่างที่วิเคราะห์</div>
+            <h4 class="fw-bold mb-0 text-success" id="kpiCount">0 รายการ</h4>
           </div>
         </div>
       </div>
 
-      <!-- กราฟที่ 1: CM Benchmark Bar Chart (3 แท่งเปรียบเทียบ 6 หมอบด) -->
+      <!-- กราฟที่ 1: CM Benchmark Bar Chart (เปรียบเทียบ 6 หมอบด) -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-bar-chart-fill me-1 text-primary"></i>กราฟแท่งเปรียบเทียบค่าเฉลี่ยรายหมอบด (CM5 vs CM6 vs CM7 vs CM9 vs CM10 vs CM11)</h6>
-          <span class="badge bg-light text-muted border">Benchmark 1", 1/2", 5 mm</span>
+          <span class="badge bg-light text-muted border">Benchmark Analysis</span>
         </div>
-        <div style="height: 320px; position: relative;">
+        <div style="height: 300px; position: relative;">
           <canvas id="benchmarkChart"></canvas>
         </div>
       </div>
@@ -334,10 +331,10 @@
       <!-- กราฟที่ 2: Trend Line Chart พร้อมเส้น Spec Limits -->
       <div class="card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรง พร้อมเส้นควบคุมมาตรฐาน (Upper/Lower Spec)</h6>
+          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-graph-up me-1 text-primary"></i>กราฟแนวโน้ม % ค้างตะแกรง พร้อมเส้นควบคุมมาตรฐาน (Upper Spec Limit)</h6>
           <span class="badge bg-light text-dark border" id="chartSubTitle">แสดงผลทุก CM</span>
         </div>
-        <div style="height: 340px; position: relative;">
+        <div style="height: 330px; position: relative;">
           <canvas id="trendChart"></canvas>
         </div>
       </div>
@@ -360,19 +357,15 @@
                 <th>ค้าง 1" (กก.)</th>
                 <th>% ค้าง 1"</th>
                 <th>ค้าง 1/2" (กก.)</th>
-                <th>% 1/2" (สะสม)</th>
-                <th>ค้าง 5 มม. (กก.)</th>
-                <th>% 5 มม. (สะสม)</th>
-                <th>ฝุ่น &lt;5 มม. (%)</th>
+                <th>% ค้าง 1/2" (สะสม)</th>
                 <th>ผู้รายงาน</th>
                 <th>รูป 1"</th>
                 <th>รูป 1/2"</th>
-                <th>รูป 5 มม.</th>
                 <th>จัดการ (PIN)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td colspan="17" class="py-4 text-muted">กำลังโหลดข้อมูล...</td></tr>
+              <tr><td colspan="13" class="py-4 text-muted">กำลังโหลดข้อมูล...</td></tr>
             </tbody>
           </table>
         </div>
@@ -382,12 +375,12 @@
     <!-- ==================== VIEW 2: DATA ENTRY ==================== -->
     <div class="tab-pane fade" id="entry-view" role="tabpanel">
       <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
           <div class="card p-3 p-md-4">
             <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-calculator-fill fs-4 text-primary"></i>
-                <h5 class="fw-bold mb-0">แบบฟอร์มชั่งร่อนปูนเม็ด 3 ชั้น (1", 1/2", 5 mm)</h5>
+                <h5 class="fw-bold mb-0">แบบฟอร์มชั่งร่อนปูนเม็ด (Clinker Sieve Analysis)</h5>
               </div>
               <span class="badge bg-light text-muted border small" id="draftStatusText">ระบบ Auto-Draft พร้อมทำงาน</span>
             </div>
@@ -461,101 +454,67 @@
                 </div>
               </div>
 
-              <!-- กรอกค่าน้ำหนักค้าง 3 ตะแกรง (1", 1/2", 5 mm) -->
+              <!-- กรอกค่าน้ำหนักค้างตะแกรง 1" และ 1/2" -->
               <div class="row g-3 mb-3">
-                <!-- ตะแกรง 1 นิ้ว -->
-                <div class="col-md-4">
-                  <div class="border rounded p-3 bg-light h-100">
-                    <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>1. ตะแกรง 1 นิ้ว (1") <span class="required-star">*</span></label>
+                <div class="col-md-6">
+                  <div class="border rounded p-3 bg-light">
+                    <label class="form-label fw-bold text-primary"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1 นิ้ว (1") <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
-                      <span class="input-group-text small">ชั่งได้</span>
+                      <span class="input-group-text">น้ำหนักชั่งค้าง</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight1" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
-                      <span class="input-group-text small">กก.</span>
+                      <span class="input-group-text">กก.</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="small text-muted">% ค้าง:</span>
-                      <span class="fw-bold text-primary" id="pct1Display">0.00 %</span>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="small text-muted">คิดเป็น % ค้าง:</span>
+                      <span class="fw-bold text-primary fs-5" id="pct1Display">0.00 %</span>
                     </div>
-                    <div>
-                      <label class="form-label small mb-1">รูปถ่าย 1" <span class="required-star">*</span></label>
+                    
+                    <div class="mt-2">
+                      <label class="form-label small mb-1">
+                        <i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1" <span class="required-star">* (บังคับแนบรูป)</span>
+                      </label>
                       <input type="file" class="form-control form-control-sm" id="imgFile1" accept="image/*" required onchange="handleImageSelection(this, 'preview1')">
-                      <div class="img-preview-box mt-2" id="preview1"><span class="small text-danger">ยังไม่แนบรูป</span></div>
+                      <div class="img-preview-box mt-2" id="preview1"><span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span></div>
                     </div>
                   </div>
                 </div>
 
-                <!-- ตะแกรง 1/2 นิ้ว -->
-                <div class="col-md-4">
-                  <div class="border rounded p-3 bg-light h-100">
-                    <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>2. ตะแกรง 1/2 นิ้ว (1/2") <span class="required-star">*</span></label>
+                <div class="col-md-6">
+                  <div class="border rounded p-3 bg-light">
+                    <label class="form-label fw-bold text-warning"><i class="bi bi-box-seam me-1"></i>ตะแกรง 1/2 นิ้ว (1/2") <span class="required-star">*</span></label>
                     <div class="input-group mb-2">
-                      <span class="input-group-text small">ชั่งได้</span>
+                      <span class="input-group-text">น้ำหนักชั่งค้าง</span>
                       <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight2" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
-                      <span class="input-group-text small">กก.</span>
+                      <span class="input-group-text">กก.</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="small text-muted">% สะสม (รวม 1"):</span>
-                      <span class="fw-bold text-warning" id="pct2Display">0.00 %</span>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="small text-muted">% ค้างสะสม (รวม 1"):</span>
+                      <span class="fw-bold text-warning fs-5" id="pct2Display">0.00 %</span>
                     </div>
-                    <div>
-                      <label class="form-label small mb-1">รูปถ่าย 1/2" <span class="required-star">*</span></label>
+                    
+                    <div class="mt-2">
+                      <label class="form-label small mb-1">
+                        <i class="bi bi-images me-1"></i>รูปถ่ายตะแกรง 1/2" <span class="required-star">* (บังคับแนบรูป)</span>
+                      </label>
                       <input type="file" class="form-control form-control-sm" id="imgFile2" accept="image/*" required onchange="handleImageSelection(this, 'preview2')">
-                      <div class="img-preview-box mt-2" id="preview2"><span class="small text-danger">ยังไม่แนบรูป</span></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- ตะแกรง 5 มม. -->
-                <div class="col-md-4">
-                  <div class="border rounded p-3 bg-light h-100">
-                    <label class="form-label fw-bold text-success"><i class="bi bi-box-seam me-1"></i>3. ตะแกรง 5 มม. (5 mm) <span class="required-star">*</span></label>
-                    <div class="input-group mb-2">
-                      <span class="input-group-text small">ชั่งได้</span>
-                      <input type="number" step="0.01" min="0" max="10.5" class="form-control fw-bold" id="weight3" placeholder="0.00" required oninput="calculatePercent(); saveDraft();">
-                      <span class="input-group-text small">กก.</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="small text-muted">% สะสม (รวม 1"+1/2"):</span>
-                      <span class="fw-bold text-success" id="pct3Display">0.00 %</span>
-                    </div>
-                    <div>
-                      <label class="form-label small mb-1">รูปถ่าย 5 mm <span class="required-star">*</span></label>
-                      <input type="file" class="form-control form-control-sm" id="imgFile3" accept="image/*" required onchange="handleImageSelection(this, 'preview3')">
-                      <div class="img-preview-box mt-2" id="preview3"><span class="small text-danger">ยังไม่แนบรูป</span></div>
+                      <div class="img-preview-box mt-2" id="preview2"><span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span></div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- กล่องสรุปสถานะการกระจายขนาดเม็ด -->
-              <div class="alert alert-light border p-3 mb-4" id="statusAlertBox">
-                <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 border-bottom pb-2">
-                  <h6 class="fw-bold mb-0">ผลวิเคราะห์การกระจายตัวของขนาดเม็ด (Granulometry Summary)</h6>
-                  <div class="fw-bold fs-5" id="totalPctDisplay">สถานะ: รอการคำนวณ</div>
+              <!-- รวม % ค้างสะสม พร้อมกล่องแสดงสถานะ เกินเกณฑ์ / ปกติ -->
+              <div class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center p-3 mb-4" id="statusAlertBox">
+                <div>
+                  <h6 class="fw-bold mb-1">รวม % ค้างตะแกรงสะสม (Cumulative Retained)</h6>
+                  <small class="text-muted" id="formSpecHintText">เกณฑ์ควบคุมมาตรฐาน: ตะแกรง 1" &le; 10% | ตะแกรง 1/2" สะสม &le; 30%</small>
                 </div>
-                <div class="row g-2 text-center small">
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 1" (ก้อนใหญ่)</span>
-                    <b id="sumPct1Text" class="text-primary">-</b>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 1/2" สะสม (ก้อนหยาบ)</span>
-                    <b id="sumPct2Text" class="text-warning">-</b>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ค้าง 5 มม. สะสม (รวม)</span>
-                    <b id="sumPct3Text" class="text-success">-</b>
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <span class="text-muted d-block">ฝุ่นปูนเม็ด (&lt; 5 มม.)</span>
-                    <b id="sumPctFinesText" class="text-danger">-</b>
-                  </div>
-                </div>
+                <div class="fs-4 fw-bold mt-2 mt-md-0" id="totalPctDisplay">0.00 %</div>
               </div>
 
               <div class="d-grid">
                 <button type="submit" class="btn btn-primary btn-lg fw-bold" id="saveBtn">
-                  <i class="bi bi-cloud-arrow-up-fill me-1"></i> บันทึกข้อมูลและส่งแจ้งเตือน Telegram (3 ภาพ)
+                  <i class="bi bi-cloud-arrow-up-fill me-1"></i> บันทึกข้อมูลและส่งแจ้งเตือน Telegram
                 </button>
               </div>
             </form>
@@ -585,14 +544,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzeId8QcFaYtW9dswefQ3hz
 const SUPERVISOR_PIN = "1234";
 
 let rawData = [];
-let currentLimits = { max1Inch: 10.0, maxHalfInch: 30.0, min5mm: 85.0 };
+let currentLimits = { max1Inch: 10.0, maxHalfInch: 30.0 };
 let trendChartInstance = null;
 let benchmarkChartInstance = null;
 
 let compressedImages = {
   preview1: null,
-  preview2: null,
-  preview3: null
+  preview2: null
 };
 
 // ==========================================
@@ -638,17 +596,13 @@ function openLimitSettingsModal() {
   Swal.fire({
     title: 'ตั้งค่าเกณฑ์ควบคุม (Control Limits)',
     html: `
-      <div class="text-start mb-2">
+      <div class="text-start mb-3">
         <label class="form-label small fw-bold">เกณฑ์สูงสุด ตะแกรง 1 นิ้ว (%):</label>
         <input type="number" step="0.1" id="swalLimit1" class="form-control" value="${currentLimits.max1Inch}">
       </div>
-      <div class="text-start mb-2">
+      <div class="text-start mb-3">
         <label class="form-label small fw-bold">เกณฑ์สูงสุด ตะแกรง 1/2 นิ้ว สะสม (%):</label>
         <input type="number" step="0.1" id="swalLimitHalf" class="form-control" value="${currentLimits.maxHalfInch}">
-      </div>
-      <div class="text-start mb-3">
-        <label class="form-label small fw-bold">เกณฑ์ขั้นต่ำ ตะแกรง 5 มม. สะสม (%):</label>
-        <input type="number" step="0.1" id="swalLimit5mm" class="form-control" value="${currentLimits.min5mm}">
       </div>
       <div class="text-start">
         <label class="form-label small fw-bold text-danger">ยืนยัน Supervisor PIN (4 หลัก):</label>
@@ -661,10 +615,9 @@ function openLimitSettingsModal() {
     preConfirm: () => {
       const l1 = parseFloat(document.getElementById('swalLimit1').value);
       const lHalf = parseFloat(document.getElementById('swalLimitHalf').value);
-      const l5 = parseFloat(document.getElementById('swalLimit5mm').value);
       const pin = document.getElementById('swalPin').value;
 
-      if (isNaN(l1) || l1 <= 0 || isNaN(lHalf) || lHalf <= 0 || isNaN(l5) || l5 <= 0) {
+      if (isNaN(l1) || l1 <= 0 || isNaN(lHalf) || lHalf <= 0) {
         Swal.showValidationMessage('กรุณากรอกตัวเลขเกณฑ์ควบคุมให้ถูกต้อง');
         return false;
       }
@@ -672,7 +625,7 @@ function openLimitSettingsModal() {
         Swal.showValidationMessage('รหัส Supervisor PIN ไม่ถูกต้อง!');
         return false;
       }
-      return { max1Inch: l1, maxHalfInch: lHalf, min5mm: l5 };
+      return { max1Inch: l1, maxHalfInch: lHalf };
     }
   }).then(async (result) => {
     if (result.isConfirmed) {
@@ -705,11 +658,9 @@ async function saveLimitsToBackend(limits) {
 function updateLimitsUI() {
   document.getElementById('currentLimit1Text').innerText = `\u2264 ${currentLimits.max1Inch.toFixed(2)}%`;
   document.getElementById('currentLimitHalfText').innerText = `\u2264 ${currentLimits.maxHalfInch.toFixed(2)}%`;
-  document.getElementById('currentLimit5mmText').innerText = `\u2265 ${currentLimits.min5mm.toFixed(2)}%`;
-  
-  document.getElementById('kpiLabel1').innerText = `เฉลี่ย % ค้าง 1" (\u2264 ${currentLimits.max1Inch}%)`;
-  document.getElementById('kpiLabel2').innerText = `เฉลี่ย 1/2" สะสม (\u2264 ${currentLimits.maxHalfInch}%)`;
-  document.getElementById('kpiLabel3').innerText = `เฉลี่ย 5 มม. สะสม (\u2265 ${currentLimits.min5mm}%)`;
+  document.getElementById('kpiLabel1').innerText = `เฉลี่ย % ค้าง 1" (เกณฑ์ \u2264 ${currentLimits.max1Inch}%)`;
+  document.getElementById('kpiLabel2').innerText = `เฉลี่ย % ค้าง 1/2" สะสม (เกณฑ์ \u2264 ${currentLimits.maxHalfInch}%)`;
+  document.getElementById('formSpecHintText').innerText = `เกณฑ์ควบคุมมาตรฐาน: ตะแกรง 1" \u2264 ${currentLimits.max1Inch}% | ตะแกรง 1/2" สะสม \u2264 ${currentLimits.maxHalfInch}%`;
 
   if (trendChartInstance && trendChartInstance.options.plugins.annotation) {
     trendChartInstance.options.plugins.annotation.annotations.specLimit1Inch.yMin = currentLimits.max1Inch;
@@ -718,22 +669,18 @@ function updateLimitsUI() {
 
     trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.yMin = currentLimits.maxHalfInch;
     trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.yMax = currentLimits.maxHalfInch;
-    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.label.content = `Upper Spec 1/2" (${currentLimits.maxHalfInch}%)`;
-
-    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.yMin = currentLimits.min5mm;
-    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.yMax = currentLimits.min5mm;
-    trendChartInstance.options.plugins.annotation.annotations.specLimit5mm.label.content = `Lower Spec 5mm (${currentLimits.min5mm}%)`;
+    trendChartInstance.options.plugins.annotation.annotations.specLimitHalfInch.label.content = `Upper Spec 1/2" สะสม (${currentLimits.maxHalfInch}%)`;
     trendChartInstance.update();
   }
 
   if (benchmarkChartInstance && benchmarkChartInstance.options.plugins.annotation) {
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMin = currentLimits.max1Inch;
     benchmarkChartInstance.options.plugins.annotation.annotations.line1.yMax = currentLimits.max1Inch;
-    benchmarkChartInstance.options.plugins.annotation.annotations.line1.label.content = `1" (${currentLimits.max1Inch}%)`;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line1.label.content = `เกณฑ์ 1" (${currentLimits.max1Inch}%)`;
 
     benchmarkChartInstance.options.plugins.annotation.annotations.line2.yMin = currentLimits.maxHalfInch;
     benchmarkChartInstance.options.plugins.annotation.annotations.line2.yMax = currentLimits.maxHalfInch;
-    benchmarkChartInstance.options.plugins.annotation.annotations.line2.label.content = `1/2" (${currentLimits.maxHalfInch}%)`;
+    benchmarkChartInstance.options.plugins.annotation.annotations.line2.label.content = `เกณฑ์ 1/2" (${currentLimits.maxHalfInch}%)`;
     benchmarkChartInstance.update();
   }
 
@@ -749,7 +696,7 @@ function renderStandardsTable(standards) {
 
   tbody.innerHTML = '';
   standards.forEach((item) => {
-    const isOptimal = item.fraction.includes('5 - 12.5') || item.fraction.includes('5 มม.');
+    const isOptimal = item.fraction.includes('5 - 12.5') || item.fraction.includes('Ideal');
     const isCoarse = item.fraction.includes('> 25');
     
     let badgeClass = 'bg-secondary';
@@ -779,15 +726,14 @@ function saveDraft() {
     grossWeight: document.getElementById('grossWeight').value,
     tareWeight: document.getElementById('tareWeight').value,
     screen1: document.getElementById('weight1').value,
-    screen2: document.getElementById('weight2').value,
-    screen3: document.getElementById('weight3').value
+    screen2: document.getElementById('weight2').value
   };
-  localStorage.setItem('clinker_sieve_draft_v2', JSON.stringify(draft));
+  localStorage.setItem('clinker_sieve_draft', JSON.stringify(draft));
   document.getElementById('draftStatusText').innerText = "บันทึกร่างอัตโนมัติแล้ว";
 }
 
 function restoreDraft() {
-  const saved = localStorage.getItem('clinker_sieve_draft_v2');
+  const saved = localStorage.getItem('clinker_sieve_draft');
   if (saved) {
     try {
       const draft = JSON.parse(saved);
@@ -799,7 +745,6 @@ function restoreDraft() {
       if (draft.tareWeight) document.getElementById('tareWeight').value = draft.tareWeight;
       if (draft.screen1) document.getElementById('weight1').value = draft.screen1;
       if (draft.screen2) document.getElementById('weight2').value = draft.screen2;
-      if (draft.screen3) document.getElementById('weight3').value = draft.screen3;
       calculatePercent();
       document.getElementById('draftStatusText').innerText = "กู้คืนข้อมูลร่างสำเร็จ";
     } catch (e) {
@@ -809,7 +754,7 @@ function restoreDraft() {
 }
 
 function clearDraft() {
-  localStorage.removeItem('clinker_sieve_draft_v2');
+  localStorage.removeItem('clinker_sieve_draft');
   document.getElementById('draftStatusText').innerText = "ระบบ Auto-Draft พร้อมทำงาน";
 }
 
@@ -857,47 +802,29 @@ function calculatePercent() {
   
   const w1 = parseFloat(document.getElementById('weight1').value) || 0;
   const w2 = parseFloat(document.getElementById('weight2').value) || 0;
-  const w3 = parseFloat(document.getElementById('weight3').value) || 0;
   
-  // 1. % ค้าง 1 นิ้ว
   const pct1 = (w1 / net) * 100;
-  
-  // 2. % ค้าง 1/2 นิ้ว สะสม
-  const w2Cum = w1 + w2;
-  const pct2 = (w2Cum / net) * 100;
-  
-  // 3. % ค้าง 5 มม. สะสม
-  const w3Cum = w1 + w2 + w3;
-  const pct3 = (w3Cum / net) * 100;
-  
-  // 4. % ฝุ่น < 5 มม.
-  const pctFines = Math.max(0, 100 - pct3);
+  const w2Cumulative = w1 + w2;
+  const pct2Cumulative = (w2Cumulative / net) * 100;
   
   const isOut1 = pct1 > currentLimits.max1Inch;
-  const isOut2 = pct2 > currentLimits.maxHalfInch;
-  const isOut3 = pct3 < currentLimits.min5mm;
-  const isOutOfSpec = isOut1 || isOut2 || isOut3;
+  const isOut2 = pct2Cumulative > currentLimits.maxHalfInch;
+  const isOutOfSpec = isOut1 || isOut2;
 
-  document.getElementById('pct1Display').innerHTML = `${pct1.toFixed(2)} % ${isOut1 ? '<span class="badge bg-danger fs-6 ms-1">เกิน</span>' : ''}`;
-  document.getElementById('pct2Display').innerHTML = `${pct2.toFixed(2)} % ${isOut2 ? '<span class="badge bg-danger fs-6 ms-1">เกิน</span>' : ''}`;
-  document.getElementById('pct3Display').innerHTML = `${pct3.toFixed(2)} % ${isOut3 ? '<span class="badge bg-danger fs-6 ms-1">ต่ำ</span>' : ''}`;
-
-  document.getElementById('sumPct1Text').innerText = pct1.toFixed(2) + ' %';
-  document.getElementById('sumPct2Text').innerText = pct2.toFixed(2) + ' %';
-  document.getElementById('sumPct3Text').innerText = pct3.toFixed(2) + ' %';
-  document.getElementById('sumPctFinesText').innerText = pctFines.toFixed(2) + ' %';
-
+  document.getElementById('pct1Display').innerHTML = `${pct1.toFixed(2)} % ${isOut1 ? '<span class="badge bg-danger fs-6 ms-1">เกินเกณฑ์</span>' : ''}`;
+  document.getElementById('pct2Display').innerHTML = `${pct2Cumulative.toFixed(2)} % ${isOut2 ? '<span class="badge bg-danger fs-6 ms-1">เกินเกณฑ์</span>' : ''}`;
+  
   const totalDisplay = document.getElementById('totalPctDisplay');
   const alertBox = document.getElementById('statusAlertBox');
 
   if (isOutOfSpec) {
-    alertBox.className = "alert alert-danger border p-3 mb-4";
-    totalDisplay.className = "fs-5 fw-bold text-danger";
-    totalDisplay.innerHTML = `<span class="badge bg-danger fs-6 me-1">🚨 ผิดเกณฑ์</span> ค้าง 5mm สะสม: ${pct3.toFixed(2)}% (ฝุ่น: ${pctFines.toFixed(2)}%)`;
+    alertBox.className = "alert alert-danger border d-flex flex-wrap justify-content-between align-items-center p-3 mb-4";
+    totalDisplay.className = "fs-4 fw-bold text-danger mt-2 mt-md-0";
+    totalDisplay.innerHTML = `${pct2Cumulative.toFixed(2)} % <span class="badge bg-danger fs-6 ms-1">เกินเกณฑ์ (Out of Spec)</span>`;
   } else {
-    alertBox.className = "alert alert-success border p-3 mb-4";
-    totalDisplay.className = "fs-5 fw-bold text-success";
-    totalDisplay.innerHTML = `<span class="badge bg-success fs-6 me-1">✅ ปกติ</span> ค้าง 5mm สะสม: ${pct3.toFixed(2)}% (ฝุ่น: ${pctFines.toFixed(2)}%)`;
+    alertBox.className = "alert alert-success border d-flex flex-wrap justify-content-between align-items-center p-3 mb-4";
+    totalDisplay.className = "fs-4 fw-bold text-success mt-2 mt-md-0";
+    totalDisplay.innerHTML = `${pct2Cumulative.toFixed(2)} % <span class="badge bg-success fs-6 ms-1">ปกติ (Normal)</span>`;
   }
 }
 
@@ -947,7 +874,7 @@ async function handleImageSelection(input, previewId) {
   const box = document.getElementById(previewId);
   if (input.files && input.files[0]) {
     const file = input.files[0];
-    box.innerHTML = `<div class="spinner-border spinner-border-sm text-primary" role="status"></div> <span class="small ms-1 text-muted">ย่อขนาด...</span>`;
+    box.innerHTML = `<div class="spinner-border spinner-border-sm text-primary" role="status"></div> <span class="small ms-1 text-muted">กำลังย่อขนาด...</span>`;
     
     try {
       const compressedData = await compressAndResizeImage(file, 1200, 1200, 0.75);
@@ -955,11 +882,11 @@ async function handleImageSelection(input, previewId) {
       box.innerHTML = `<img src="${compressedData}">`;
     } catch (err) {
       compressedImages[previewId] = null;
-      box.innerHTML = `<span class="small text-danger">เกิดข้อผิดพลาด</span>`;
+      box.innerHTML = `<span class="small text-danger">เกิดข้อผิดพลาดในการโหลดรูป</span>`;
     }
   } else {
     compressedImages[previewId] = null;
-    box.innerHTML = `<span class="small text-danger">ยังไม่แนบรูป</span>`;
+    box.innerHTML = `<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>`;
   }
 }
 
@@ -983,19 +910,10 @@ function initTrendChart() {
           fill: false
         },
         {
-          label: '% ค้าง 1/2 นิ้ว (สะสม)',
+          label: '% ค้าง 1/2 นิ้ว (สะสมรวม 1")',
           data: [],
           borderColor: '#f59e0b',
           backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          tension: 0.25,
-          borderWidth: 2,
-          fill: false
-        },
-        {
-          label: '% ค้าง 5 มม. (สะสม)',
-          data: [],
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
           tension: 0.25,
           borderWidth: 2.5,
           fill: true
@@ -1014,15 +932,15 @@ function initTrendChart() {
               yMin: 10,
               yMax: 10,
               borderColor: 'red',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
+              borderWidth: 2,
+              borderDash: [6, 6],
               label: {
                 display: true,
                 content: 'Upper Spec 1" (10%)',
                 position: 'end',
                 backgroundColor: 'rgba(239, 68, 68, 0.8)',
                 color: '#fff',
-                font: { size: 9 }
+                font: { size: 10 }
               }
             },
             specLimitHalfInch: {
@@ -1030,31 +948,15 @@ function initTrendChart() {
               yMin: 30,
               yMax: 30,
               borderColor: '#b91c1c',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
+              borderWidth: 2,
+              borderDash: [4, 4],
               label: {
                 display: true,
-                content: 'Upper Spec 1/2" (30%)',
+                content: 'Upper Spec 1/2" สะสม (30%)',
                 position: 'start',
                 backgroundColor: 'rgba(185, 28, 28, 0.8)',
                 color: '#fff',
-                font: { size: 9 }
-              }
-            },
-            specLimit5mm: {
-              type: 'line',
-              yMin: 85,
-              yMax: 85,
-              borderColor: '#059669',
-              borderWidth: 1.5,
-              borderDash: [5, 5],
-              label: {
-                display: true,
-                content: 'Lower Spec 5mm (85%)',
-                position: 'center',
-                backgroundColor: 'rgba(5, 150, 105, 0.8)',
-                color: '#fff',
-                font: { size: 9 }
+                font: { size: 10 }
               }
             }
           }
@@ -1063,7 +965,7 @@ function initTrendChart() {
       scales: {
         y: {
           beginAtZero: true,
-          suggestedMax: 100,
+          suggestedMax: 35,
           title: { display: true, text: '% ค้างตะแกรง' },
           ticks: { callback: (v) => v + '%' }
         },
@@ -1081,21 +983,17 @@ function initBenchmarkChart() {
       labels: ['CM 5', 'CM 6', 'CM 7', 'CM 9', 'CM 10', 'CM 11'],
       datasets: [
         {
-          label: 'เฉลี่ย 1 นิ้ว',
+          label: 'เฉลี่ย % ค้าง 1 นิ้ว',
           data: [0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(2, 132, 199, 0.85)',
+          backgroundColor: 'rgba(2, 132, 199, 0.8)',
+          borderColor: '#0284c7',
           borderWidth: 1
         },
         {
-          label: 'เฉลี่ย 1/2 นิ้ว สะสม',
+          label: 'เฉลี่ย % ค้าง 1/2 นิ้ว สะสม',
           data: [0, 0, 0, 0, 0, 0],
           backgroundColor: 'rgba(245, 158, 11, 0.85)',
-          borderWidth: 1
-        },
-        {
-          label: 'เฉลี่ย 5 มม. สะสม',
-          data: [0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(16, 185, 129, 0.85)',
+          borderColor: '#f59e0b',
           borderWidth: 1
         }
       ]
@@ -1114,7 +1012,14 @@ function initBenchmarkChart() {
               borderColor: 'red',
               borderWidth: 1.5,
               borderDash: [5, 5],
-              label: { display: true, content: '1" (10%)', position: 'end', backgroundColor: 'red', color: '#fff', font: { size: 8 } }
+              label: {
+                display: true,
+                content: 'เกณฑ์ 1" (10%)',
+                position: 'end',
+                backgroundColor: 'red',
+                color: '#fff',
+                font: { size: 9 }
+              }
             },
             line2: {
               type: 'line',
@@ -1123,7 +1028,14 @@ function initBenchmarkChart() {
               borderColor: '#b91c1c',
               borderWidth: 1.5,
               borderDash: [5, 5],
-              label: { display: true, content: '1/2" (30%)', position: 'start', backgroundColor: '#b91c1c', color: '#fff', font: { size: 8 } }
+              label: {
+                display: true,
+                content: 'เกณฑ์ 1/2" (30%)',
+                position: 'start',
+                backgroundColor: '#b91c1c',
+                color: '#fff',
+                font: { size: 9 }
+              }
             }
           }
         }
@@ -1131,7 +1043,7 @@ function initBenchmarkChart() {
       scales: {
         y: {
           beginAtZero: true,
-          suggestedMax: 100,
+          suggestedMax: 35,
           ticks: { callback: (v) => v + '%' }
         }
       }
@@ -1163,7 +1075,7 @@ async function fetchData() {
     }
   } catch (err) {
     Swal.close();
-    Swal.fire('เชื่อมต่อล้มเหลว', 'กำลังทำงานในโหมด Offline ตรวจสอบสัญญาณอินเทอร์เน็ต', 'warning');
+    Swal.fire('เชื่อมต่อล้มเหลว', 'กำลังทำงานในโหมด Offline ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต', 'warning');
   }
 }
 
@@ -1192,22 +1104,16 @@ function updateDashboardStats(data) {
   if (!data || data.length === 0) {
     document.getElementById('kpiAvg1').innerText = '- %';
     document.getElementById('kpiAvg2').innerText = '- %';
-    document.getElementById('kpiAvg3').innerText = '- %';
-    document.getElementById('kpiAvgFines').innerText = '- %';
     document.getElementById('kpiCount').innerText = '0 รายการ';
     return;
   }
   
   const sum1 = data.reduce((acc, cur) => acc + cur.percent1, 0);
   const sum2 = data.reduce((acc, cur) => acc + cur.percent2, 0);
-  const sum3 = data.reduce((acc, cur) => acc + (cur.percent3 || 0), 0);
-  const sumFines = data.reduce((acc, cur) => acc + (cur.percentFines || 0), 0);
   const n = data.length;
   
   document.getElementById('kpiAvg1').innerText = (sum1 / n).toFixed(2) + ' %';
   document.getElementById('kpiAvg2').innerText = (sum2 / n).toFixed(2) + ' %';
-  document.getElementById('kpiAvg3').innerText = (sum3 / n).toFixed(2) + ' %';
-  document.getElementById('kpiAvgFines').innerText = (sumFines / n).toFixed(2) + ' %';
   document.getElementById('kpiCount').innerText = `${n} รายการ`;
 }
 
@@ -1223,11 +1129,9 @@ function updateTrendChart(dataset = null) {
   trendChartInstance.data.labels = sorted.map(d => `${d.date} (CM${d.cm}/กะ${d.shift})`);
   trendChartInstance.data.datasets[0].data = sorted.map(d => d.percent1);
   trendChartInstance.data.datasets[1].data = sorted.map(d => d.percent2);
-  trendChartInstance.data.datasets[2].data = sorted.map(d => d.percent3 || 0);
   
-  trendChartInstance.data.datasets[0].hidden = (metric === 'halfInch' || metric === '5mm');
-  trendChartInstance.data.datasets[1].hidden = (metric === '1inch' || metric === '5mm');
-  trendChartInstance.data.datasets[2].hidden = (metric === '1inch' || metric === 'halfInch');
+  trendChartInstance.data.datasets[0].hidden = (metric === 'halfInch');
+  trendChartInstance.data.datasets[1].hidden = (metric === '1inch');
   
   trendChartInstance.update();
 }
@@ -1236,7 +1140,6 @@ function updateBenchmarkChart(startM, endM) {
   const cmList = ['5', '6', '7', '9', '10', '11'];
   const avg1List = [];
   const avg2List = [];
-  const avg3List = [];
   
   cmList.forEach(cm => {
     const cmData = rawData.filter(d => {
@@ -1252,20 +1155,16 @@ function updateBenchmarkChart(startM, endM) {
     if (cmData.length > 0) {
       const a1 = cmData.reduce((acc, c) => acc + c.percent1, 0) / cmData.length;
       const a2 = cmData.reduce((acc, c) => acc + c.percent2, 0) / cmData.length;
-      const a3 = cmData.reduce((acc, c) => acc + (c.percent3 || 0), 0) / cmData.length;
       avg1List.push(Number(a1.toFixed(2)));
       avg2List.push(Number(a2.toFixed(2)));
-      avg3List.push(Number(a3.toFixed(2)));
     } else {
       avg1List.push(0);
       avg2List.push(0);
-      avg3List.push(0);
     }
   });
 
   benchmarkChartInstance.data.datasets[0].data = avg1List;
   benchmarkChartInstance.data.datasets[1].data = avg2List;
-  benchmarkChartInstance.data.datasets[2].data = avg3List;
   benchmarkChartInstance.update();
 }
 
@@ -1290,14 +1189,13 @@ function renderTable(data) {
   tbody.innerHTML = '';
   
   if (data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="17" class="py-4 text-muted">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="py-4 text-muted">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
     return;
   }
   
   data.forEach(row => {
     const isOut1 = row.percent1 > currentLimits.max1Inch;
     const isOut2 = row.percent2 > currentLimits.maxHalfInch;
-    const isOut3 = (row.percent3 || 0) < currentLimits.min5mm;
     
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -1310,15 +1208,11 @@ function renderTable(data) {
       <td><span class="${isOut1 ? 'badge-out-spec' : 'text-primary fw-bold'}">${row.percent1.toFixed(2)}%</span></td>
       <td>${row.screen2.toFixed(2)}</td>
       <td><span class="${isOut2 ? 'badge-out-spec' : 'text-warning fw-bold'}">${row.percent2.toFixed(2)}%</span></td>
-      <td>${(row.screen3 || 0).toFixed(2)}</td>
-      <td><span class="${isOut3 ? 'badge-out-spec' : 'text-success fw-bold'}">${(row.percent3 || 0).toFixed(2)}%</span></td>
-      <td class="text-danger fw-bold">${(row.percentFines || 0).toFixed(2)}%</td>
       <td class="small">${row.reporter}</td>
       <td>${row.screen1Image ? `<a href="javascript:void(0)" onclick="zoomImage('${row.screen1Image}')"><i class="bi bi-image text-primary fs-5"></i></a>` : '-'}</td>
       <td>${row.screen2Image ? `<a href="javascript:void(0)" onclick="zoomImage('${row.screen2Image}')"><i class="bi bi-image text-warning fs-5"></i></a>` : '-'}</td>
-      <td>${row.screen3Image ? `<a href="javascript:void(0)" onclick="zoomImage('${row.screen3Image}')"><i class="bi bi-image text-success fs-5"></i></a>` : '-'}</td>
       <td>
-        <button class="btn btn-outline-danger btn-sm p-1" onclick="deleteItemWithPin('${row.id}')" title="ลบข้อมูล"><i class="bi bi-trash"></i></button>
+        <button class="btn btn-outline-danger btn-sm p-1" onclick="deleteItemWithPin('${row.id}')" title="ลบข้อมูล (ต้องใช้ PIN)"><i class="bi bi-trash"></i></button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -1344,10 +1238,6 @@ async function submitForm(e) {
     Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 1/2 นิ้ว ก่อนบันทึก', 'warning');
     return;
   }
-  if (!compressedImages.preview3) {
-    Swal.fire('กรุณาแนบรูปภาพ', 'จำเป็นต้องแนบรูปถ่ายตะแกรง 5 มม. ก่อนบันทึก', 'warning');
-    return;
-  }
 
   const btn = document.getElementById('saveBtn');
   btn.disabled = true;
@@ -1363,10 +1253,8 @@ async function submitForm(e) {
       tareWeight: document.getElementById('tareWeight').value,
       screen1: document.getElementById('weight1').value,
       screen2: document.getElementById('weight2').value,
-      screen3: document.getElementById('weight3').value,
       screen1Image: compressedImages.preview1,
-      screen2Image: compressedImages.preview2,
-      screen3Image: compressedImages.preview3
+      screen2Image: compressedImages.preview2
     }
   };
 
@@ -1387,7 +1275,7 @@ async function submitForm(e) {
   }
 
   try {
-    Swal.fire({ title: 'กำลังบันทึกข้อมูลและอัปโหลด 3 รูปภาพ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: 'กำลังบันทึกข้อมูลและอัปโหลดรูปภาพ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
     const res = await fetch(API_URL, {
       method: "POST",
@@ -1420,10 +1308,8 @@ function resetForm() {
   document.getElementById('clinkerForm').reset();
   compressedImages.preview1 = null;
   compressedImages.preview2 = null;
-  compressedImages.preview3 = null;
-  document.getElementById('preview1').innerHTML = '<span class="small text-danger">ยังไม่แนบรูป</span>';
-  document.getElementById('preview2').innerHTML = '<span class="small text-danger">ยังไม่แนบรูป</span>';
-  document.getElementById('preview3').innerHTML = '<span class="small text-danger">ยังไม่แนบรูป</span>';
+  document.getElementById('preview1').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
+  document.getElementById('preview2').innerHTML = '<span class="small text-danger">ยังไม่ได้แนบรูปภาพ</span>';
   calculatePercent();
 }
 
